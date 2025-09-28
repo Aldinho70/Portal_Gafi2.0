@@ -1,5 +1,7 @@
 import { clearHTML } from "../../../utils/utils.js";
+
 export const getGroups = ( groups ) => {
+    let cont = 0
     const _groups = {};
     groups.forEach( group  => {
         const name = group.getName();
@@ -14,6 +16,7 @@ export const getGroups = ( groups ) => {
         _groups[name] = objt;
 
         htmlCreateGroups(objt)
+        $("#cont-all-units").html( cont += objt.units.length  )
     });
 
     return _groups;
@@ -22,7 +25,7 @@ export const getGroups = ( groups ) => {
 const htmlCreateGroups = (data) => {
     if ($('body #root_card_all_units').length == 0) {
         $("#root-card-groups").append(`
-            <div class="card mb-3 col-2 shadow-lg border-0 btn-groups"  onClick="getInfocard('${data.name}', '', ${data.units.length}, 'all_units' )">
+            <div class="card mb-3 col-2 shadow-lg border-0 btn-groups "  onClick="getInfocard('${data.name}', '', ${data.units.length}, 'all_units' )" style="cursor: pointer;">
                 <div class="card-body row " >
                     <div class="row g-0 align-items-center hover-animate rounded-4 shadow-lg" id="root_card_all_units">
                         <div class="col-auto p-3">
@@ -33,7 +36,7 @@ const htmlCreateGroups = (data) => {
                         <div class="col ps-0">
                             <div class="card-body py-3">
                                 <h6 class="card-title mb-1 text-muted text-center">Todas las unidades</h6>
-                                <h4 class="mb-0 fw-bold text-center">50+</h4>
+                                <h4 class="mb-0 fw-bold text-center" id="cont-all-units">0</h4>
                             </div>
                         <div/>
                     </div>
@@ -43,7 +46,7 @@ const htmlCreateGroups = (data) => {
     }
     
     $("#root-card-groups").append(`
-        <div class="card mb-3 col-2 shadow-sm border-0 btn-groups"  onClick="getInfocard('${data.name}', '', ${data.units.length}, '${data.name}' )" >
+        <div class="card mb-3 col-2 shadow-sm border-0 btn-groups"  onClick="getInfocard('${data.name}', '', ${data.units.length}, '${data.name}' )" style="cursor: pointer;">
             <div class="card-body row" id="">
                 <div class="row g-0 align-items-center hover-animate rounded-4 shadow-lg" id="root_card_${data.name.replaceAll(' ', '_')}">
                     <div class="col-auto p-3">

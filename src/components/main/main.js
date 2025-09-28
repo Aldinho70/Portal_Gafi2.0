@@ -9,14 +9,19 @@ $(document).ready(function () {
     <div class="container-fluid py-3 px-4">
       ${ createLoader() }
       ${ createTimedata() }  
+
       <div class="row g-3 mb-4" id="root-card-groups"></div>
-        <hr class="border-top border-2"/>
-      <div class="container-fluid px-0" id="root-main-1">
-        <!-- Categorías -->
-        <div class="row gy-4" id="root-card-info"></div>
-          <hr class="my-4"/>
-        <!-- TODAS LAS UNIDADES -->
-        <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card"></div>
+      <hr class="border border-dark border-3 opacity-75"/>
+
+      <div class="container-fluid px-0" id="root-main-1" style="max-height: 75vh; overflow-y: auto">
+
+      <!-- Categorías -->
+      <!-- <div class="row gy-4" id="root-card-info"></div>
+      <hr class="border border-primary border-3 opacity-75"/> -->
+
+      <!-- TODAS LAS UNIDADES -->
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card" ></div>
+
       </div>
     </div>
     ${ createModalNotification() }
@@ -30,33 +35,39 @@ $(document).ready(function () {
 export const htmlCreateCard = (data) => {
   clearHTML("#root-card");
   data.map(unit => {
+    console.log(unit.name);
+    console.log(unit.sensors);
     
-    const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'N/A';
-    const sensorEstado = unit.sensors.find(s => s.nombre === "BOMBA") ? unit.sensors.find(s => s.nombre === "BOMBA") : 'N/A';
+    
+    const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'Error de sensor';
+    const ignicion = unit.sensors.find(s => s.nombre === "IGNICION") ? unit.sensors.find(s => s.nombre === "IGNICION") : 'N/A';
     const voltaje = unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO");
 
     $('#root-card').append(`
-      <!-- Tarjeta Noria -->
+      <!-- Tarjeta  -->
           <div class="col">
             <div class="card shadow-lg border-0 rounded-4 bg-light">
               <div class="card-body">
                 <h5 class="card-title fw-bold fs-5 text-dark mb-2">
-                  <a class="navbar-brand" href="#">
-                    <img src="${unit.icon}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                    ${unit.name}
-                  </a>
+                  <div class="d-flex justify-content-between" >
+                    <a class="navbar-brand" href="#">
+                      <img src="${unit.icon}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                      ${unit.name}
+                    </a>
+                    <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Ver mas detalles</button>
+                  </div>
                 </h5>
                 <p class="text-muted small mb-3">
                   <i class="bi bi-clock me-1"></i> Último mensaje: ${unit.dateParsed}
                 </p>
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                    <span><i class="bi bi-${(sensorEstado.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`} me-2"></i> Ignicion</span>
-                    <span class="fw-semibold text-${(sensorEstado.valor == 1) ? `success` : `danger`}">${(sensorEstado.valor == 1) ? `Encendido` : `Apagado`}</span>
+                    <span><i class="bi bi-${(ignicion?.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`} me-2"></i> Ignicion</span>
+                    <span class="fw-semibold text-${(ignicion?.valor == 1) ? `success` : `danger`}">${(ignicion?.valor == 1) ? `Encendido` : `Apagado`}</span>
                   </li>
                   <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                    <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i> Combustible</span>
-                    <span class="fw-semibold text-success">${combustible.valor} Litros</span>
+                    <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i>Combustible actual</span>
+                    <span class="fw-semibold text-success">${combustible?.valor ??  'NO DATA'} Litros</span>
                   </li>
                   <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
                     <span><i class="bi bi-${(voltaje?.valor != 'N/A') ? `battery-charging text-warning` : `battery text-danger`} me-2"></i> Voltaje</span>
@@ -86,13 +97,13 @@ export const htmlCreateCard = (data) => {
 //       const unit = data[key];
 
 //       const combustible = (unit.sensors.find(s => s.nombre === "GABINETE")) ? unit.sensors.find(s => s.nombre === "GABINETE") : 0;
-//       const sensorEstado = (unit.sensors.find(s => s.nombre === "BOMBA")) ? unit.sensors.find(s => s.nombre === "BOMBA") : 0;
+//       const ignicion = (unit.sensors.find(s => s.nombre === "IGNICION")) ? unit.sensors.find(s => s.nombre === "IGNICION") : 0;
 //       const voltaje = (unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO")) ? unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO") : 0;
 
-//       const estadoIcon = (sensorEstado.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`;
+//       const estadoIcon = (ignicion.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`;
 //       const gabineteIcon = (combustible.valor != 1) ? `lock-fill text-danger` : `unlock-fill text-success`;
 //       const voltajeIcon = (voltaje.valor != 'N/A') ? `battery-charging text-warning` : `battery text-danger`;
-//       const estado = (sensorEstado.valor == 1) ? 'encendido' : 'apagado'
+//       const estado = (ignicion.valor == 1) ? 'encendido' : 'apagado'
 
 //       $('#root-list-card').append(`
 //         <div class="accordion-item border rounded-4 shadow-sm mb-3">
@@ -147,7 +158,7 @@ export const htmlCreateCard = (data) => {
 //                     <li class="list-group-item">
 //                       <div class="d-flex justify-content-between">
 //                         <span><i class="bi bi-${estadoIcon} me-1"></i> Estado:</span>
-//                         <span class="fw-semibold text-${sensorEstado.valor == 1 ? 'success' : 'danger'}">${estado.charAt(0).toUpperCase() + estado.slice(1)}</span>
+//                         <span class="fw-semibold text-${ignicion.valor == 1 ? 'success' : 'danger'}">${estado.charAt(0).toUpperCase() + estado.slice(1)}</span>
 //                       </div>
 //                     </li>
 
