@@ -1,4 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/dv4i40wm3rs9/public_html/dashboardParedon.com/
+    - export DEPLOYPATH=/home/dv4i40wm3rs9/public_html/dashboardGafi2.0.com/
     - /bin/cp -r * $DEPLOYPATH
