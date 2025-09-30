@@ -35,8 +35,7 @@ $(document).ready(function () {
 export const htmlCreateCard = (data) => {
   clearHTML("#root-card");
   data.map(unit => {
-    console.log(unit.name);
-    console.log(unit.sensors);
+    console.log(unit);
     
     
     const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'Error de sensor';
@@ -54,7 +53,7 @@ export const htmlCreateCard = (data) => {
                       <img src="${unit.icon}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
                       ${unit.name}
                     </a>
-                    <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Ver mas detalles</button>
+                    <button type="button" class="btn btn-warning btn-lg" onClick="(createSidebarDetailBody('${unit.id_unidad}'))" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Ver mas detalles</button>
                   </div>
                 </h5>
                 <p class="text-muted small mb-3">

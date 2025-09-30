@@ -4,8 +4,15 @@ import { getFechaActual } from './src/utils/timestamp.js';
 import MessagesService from './src/wialon/utils/getMessages.js';
 import { getGroups } from './src/components/main/Groups/Groups.js';
 import { createObjetUnit } from './src/wialon/utils/getDataUnit.js';
+import { viewMap3D, quitMap3D } from './src/components/main/GoogleMaps/GoogleMaps.js';
 import { htmlCreateCard, /*htmListCard*/ } from './src/components/main/main.js';
 import { htmlCreateNotification } from './src/components/main/Notifications.js';
+import { createSidebarDetailBody } from './src/components/main/SidebarDetailUnit/SidebarDetailUnit.js';
+
+window.createSidebarDetailBody = createSidebarDetailBody;
+window.viewMap3D = viewMap3D;
+window.quitMap3D = quitMap3D;
+
 const TOKEN = "733a7307cd0dd55c139f57fcaa9269d33033EF2588751D51ECB53AA291A5B6501EF5426B";
 const from = '2025-05-13T23:59';
 const to = '2025-05-14T23:59';
