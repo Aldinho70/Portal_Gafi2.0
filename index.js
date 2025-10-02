@@ -56,7 +56,7 @@ export async function iniciarWialon() {
 
         for (const _unit of data_units) {
             // const unidad = crearObjetoUnidad(_unit);
-            const unidad = createObjetUnit(_unit);
+            const unidad = await createObjetUnit(_unit);
             // clasificarUnidad(unidad, _unit);
             _units.push(unidad);
         }

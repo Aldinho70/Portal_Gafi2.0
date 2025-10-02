@@ -16,8 +16,6 @@ class MessagesService {
             }
             this.from = toUnixTimestamp(this.from);
             this.to = toUnixTimestamp(this.to);
-
-            console.log( this.to, this.from );
             
             // Usando flags y flagsMask para cargar toda la información disponible
             const flags = 0x0000;

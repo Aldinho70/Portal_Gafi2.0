@@ -35,12 +35,11 @@ $(document).ready(function () {
 export const htmlCreateCard = (data) => {
   clearHTML("#root-card");
   data.map(unit => {
-    console.log(unit);
-    
-    
-    const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'Error de sensor';
-    const ignicion = unit.sensors.find(s => s.nombre === "IGNICION") ? unit.sensors.find(s => s.nombre === "IGNICION") : 'N/A';
-    const voltaje = unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO");
+    // console.log(unit);
+    // const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'Error de sensor';
+    // const ignicion = unit.sensors.find(s => s.nombre === "IGNICION") ? unit.sensors.find(s => s.nombre === "IGNICION") : 'N/A';
+    // const voltaje = unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO");
+    // const odometro = unit.sensors.find(s => s.nombre === "ODOMETRO") ?? 'error de sensor';
 
     $('#root-card').append(`
       <!-- Tarjeta  -->
@@ -57,22 +56,53 @@ export const htmlCreateCard = (data) => {
                   </div>
                 </h5>
                 <p class="text-muted small mb-3">
-                  <i class="bi bi-clock me-1"></i> Último mensaje: ${unit.dateParsed}
+                  <i class="bi bi-clock me-1"></i> Calculos de los ultimos 7 dias.
                 </p>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                    <span><i class="bi bi-${(ignicion?.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`} me-2"></i> Ignicion</span>
-                    <span class="fw-semibold text-${(ignicion?.valor == 1) ? `success` : `danger`}">${(ignicion?.valor == 1) ? `Encendido` : `Apagado`}</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                    <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i>Combustible actual</span>
-                    <span class="fw-semibold text-success">${combustible?.valor ??  'NO DATA'} Litros</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                    <span><i class="bi bi-${(voltaje?.valor != 'N/A') ? `battery-charging text-warning` : `battery text-danger`} me-2"></i> Voltaje</span>
-                    <span class="fw-semibold text-${(voltaje?.valor === 'N/A') ? `danger` : `warning`}">${(voltaje?.valor === 'N/A') ? 'Error de sensor' : voltaje?.valor}</span>
-                  </li>
-                </ul>
+                <div class="row">
+                  <div class="col-7">
+                    <ul class="list-group list-group-flush">
+
+                    <!-- km recorridos -->
+                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
+                        <span><i class="bi bi-sign-merge-left me-2"></i>km recorridos:</span>
+                        <span class="fw-semibold text-danger">${ unit.data?.km_recorridos ?? 0 } km.</span>
+                      </li>
+                    <!-- km recorridos -->
+
+                    <!-- combustible consumido -->
+                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
+                        <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i>Combustible consumido:</span>
+                        <span class="fw-semibold text-success">${ unit.data?.combustible_utilisado ?? 0 } litros.</span>
+                      </li>
+                    <!-- combustible consumido -->
+
+                    <!-- Rendimiento -->
+                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
+                        <span><i class="bi bi-calculator me-2"></i>Rendimiento:</span>
+                        <span class="fw-semibold text-danger">${ unit.data?.rendimiento ?? 0 } km/h.</span>
+                      </li>
+                    <!-- Rendimiento -->
+                      
+                    <!-- Exceso de velocidad -->
+                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
+                        <span><i class="bi bi-speedometer me-2"></i>Excesos de velocidad:</span>
+                        <span class="fw-semibold text-danger">0 ocaciones</span>
+                      </li>
+                    <!-- Rendimiento -->
+
+                    </ul>
+                  </div>
+                  <div class="col-5">
+                    <div class="card text-center shadow-lg border-0 rounded-4">
+                      <div class="card-body">
+                        <h5 class="card-title text-muted fw-semibold">Estado de la unidad</h5>
+                        <h1 class="display-3 text-success fw-bold" id="cont-porcent">94%</h1>
+                        <p class="card-text text-secondary">calificacion segun su rendimiento</p>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
