@@ -12,7 +12,7 @@ import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia } from "./
     endDate.setHours(23, 59, 0, 0);
 
     const startDate = new Date( new Date() );
-    startDate.setDate(startDate.getDate() - 7);
+    startDate.setDate(startDate.getDate() - 1);
     startDate.setHours(0, 0, 0, 0);
 
     let from = timestamp.formatLocalDate(startDate);
@@ -37,23 +37,26 @@ export const createObjetUnit = async (_unit) => {
 }
 
 const getDataProps = async ( unit ) => {
-    // console.log(unit);
-    
     const messages = await getMessages( unit.getId() )
     const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', unit.getSensors())?.id ?? 0;
-
-    // console.log(sensor_fuel);
     
     if (messages.length) {
         const coordinates = [];
         const combustibles = [];
-        let combustibleLimpio;
         let rendimiento;
+        let combustibleLimpio;
+        let cont_excesos_de_velocidad = 0;
 
         messages.map(message => {
 
             if (message.pos?.x && message.pos?.y) {
                 coordinates.push([message.pos.x, message.pos.y])
+
+                if( message.pos?.s > 95 ){
+                    console.log( message.pos?.s );
+                    
+                    cont_excesos_de_velocidad ++;
+                }
             }
 
             if( message.pos?.s == 0 ){
@@ -89,8 +92,9 @@ const getDataProps = async ( unit ) => {
         
         return {
             'km_recorridos': Haversine.calculateDistanceByLatLong(coordinates),
-            'combustible_utilisado': combustibleLimpio.totalDescarga,
+            'combustible_utilizado': combustibleLimpio.totalDescarga,
             'rendimiento': rendimiento,
+            'excesos_de_velocidad': cont_excesos_de_velocidad,
         };
     }
 }

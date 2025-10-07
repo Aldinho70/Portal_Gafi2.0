@@ -72,7 +72,7 @@ export const htmlCreateCard = (data) => {
                     <!-- combustible consumido -->
                       <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
                         <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i>Combustible consumido:</span>
-                        <span class="fw-semibold text-success">${ unit.data?.combustible_utilisado ?? 0 } litros.</span>
+                        <span class="fw-semibold text-success">${ unit.data?.combustible_utilizado ?? 0 } litros.</span>
                       </li>
                     <!-- combustible consumido -->
 
@@ -86,7 +86,7 @@ export const htmlCreateCard = (data) => {
                     <!-- Exceso de velocidad -->
                       <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
                         <span><i class="bi bi-speedometer me-2"></i>Excesos de velocidad:</span>
-                        <span class="fw-semibold text-danger">0 ocaciones</span>
+                        <span class="fw-semibold text-danger">${ unit.data?.excesos_de_velocidad ?? 0 } ocasiones</span>
                       </li>
                     <!-- Rendimiento -->
 
