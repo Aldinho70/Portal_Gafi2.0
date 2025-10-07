@@ -3,9 +3,9 @@ import wialonSDK from './src/wialon/sdk/wialonSDK.js';
 import { getFechaActual } from './src/utils/timestamp.js';
 import MessagesService from './src/wialon/utils/getMessages.js';
 import { getGroups } from './src/components/main/Groups/Groups.js';
-import { createObjetUnit } from './src/wialon/utils/getDataUnit.js';
+import { createObjetUnit, loadUnitsDataInBatches } from './src/wialon/utils/getDataUnit.js';
 import { viewMap3D, quitMap3D } from './src/components/main/GoogleMaps/GoogleMaps.js';
-import { htmlCreateCard, /*htmListCard*/ } from './src/components/main/main.js';
+import { htmlCreateCard /*htmListCard*/ } from './src/components/main/main.js';
 import { htmlCreateNotification } from './src/components/main/Notifications.js';
 import { createSidebarDetailBody } from './src/components/main/SidebarDetailUnit/SidebarDetailUnit.js';
 
@@ -39,7 +39,6 @@ export async function iniciarWialon() {
         const _units = [];
 
         session = await wialonSDK.init(TOKEN);
-        const user = session.getCurrUser();
         const groups = session.getItems('avl_unit_group');
         const resources = session.getItems('avl_resource');
         const all_units = session.getItems('avl_unit');
@@ -64,6 +63,7 @@ export async function iniciarWialon() {
         $(`#root_card_${_group_select.replaceAll(' ', '_')}`).addClass('bg-warning');
 
         htmlCreateCard(_units);
+        loadUnitsDataInBatches(_units, 10);
 
         if (sessionStorage.getItem('card_actived')) {
             $(`#root_card_${sessionStorage.getItem('card_actived')}`).addClass('bg-warning');

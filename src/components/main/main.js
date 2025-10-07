@@ -34,208 +34,98 @@ $(document).ready(function () {
 
 export const htmlCreateCard = (data) => {
   clearHTML("#root-card");
+
   data.map(unit => {
-    // console.log(unit);
-    // const combustible = unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") ? unit.sensors.find(s => s.nombre === "COMBUSTIBLE DASHBOARD") : 'Error de sensor';
-    // const ignicion = unit.sensors.find(s => s.nombre === "IGNICION") ? unit.sensors.find(s => s.nombre === "IGNICION") : 'N/A';
-    // const voltaje = unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO");
-    // const odometro = unit.sensors.find(s => s.nombre === "ODOMETRO") ?? 'error de sensor';
-
     $('#root-card').append(`
-      <!-- Tarjeta  -->
-          <div class="col">
-            <div class="card shadow-lg border-0 rounded-4 bg-light">
+  <div class="col" id="card-${unit.id_unidad}">
+    <div class="card shadow-lg border-0 rounded-4 bg-white overflow-hidden">
+      <div class="card-body p-4">
+
+        <!-- ENCABEZADO -->
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+          <div class="d-flex align-items-center">
+            <img src="${unit.icon}" alt="Logo" width="45" height="45" class="me-2 rounded-circle border">
+            <div>
+              <h5 class="mb-0 fw-bold text-dark">${unit.name}</h5>
+              <small class="text-muted">Unidad de transporte</small>
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline-warning  fw-semibold"
+            onClick="createSidebarDetailBody('${unit.id_unidad}')"
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+            aria-controls="offcanvasRight">
+            <i class="bi bi-info-circle me-1"></i> Ver mas detalles
+          </button>
+        </div>
+
+        <!-- SECCIÓN: DATOS GENERALES -->
+        <div class="mb-3">
+          <h6 class="text-uppercase text-muted fw-bold border-start border-3 ps-2 mb-2">
+            Resumen de actividad
+          </h6>
+          <p class="text-muted small mb-0 d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+            <span><i class="bi bi-clock me-1"></i> Datos recopilados de los últimos 7 días</span>
+          </p>
+        </div>
+
+        <!-- SECCIÓN: MÉTRICAS -->
+        <div class="row g-3 align-items-stretch">
+          <div class="col-md-7">
+            <div class="card border-light shadow-sm rounded-3 h-100">
               <div class="card-body">
-                <h5 class="card-title fw-bold fs-5 text-dark mb-2">
-                  <div class="d-flex justify-content-between" >
-                    <a class="navbar-brand" href="#">
-                      <img src="${unit.icon}" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-                      ${unit.name}
-                    </a>
-                    <button type="button" class="btn btn-warning btn-lg" onClick="(createSidebarDetailBody('${unit.id_unidad}'))" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Ver mas detalles</button>
-                  </div>
-                </h5>
-                <p class="text-muted small mb-3">
-                  <i class="bi bi-clock me-1"></i> Calculos de los ultimos 7 dias.
-                </p>
-                <div class="row">
-                  <div class="col-7">
-                    <ul class="list-group list-group-flush">
-
-                    <!-- km recorridos -->
-                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                        <span><i class="bi bi-sign-merge-left me-2"></i>km recorridos:</span>
-                        <span class="fw-semibold text-danger">${ unit.data?.km_recorridos ?? 0 } km.</span>
-                      </li>
-                    <!-- km recorridos -->
-
-                    <!-- combustible consumido -->
-                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                        <span><i class="bi bi-fuel-pump-diesel-fill me-2"></i>Combustible consumido:</span>
-                        <span class="fw-semibold text-success">${ unit.data?.combustible_utilizado ?? 0 } litros.</span>
-                      </li>
-                    <!-- combustible consumido -->
-
-                    <!-- Rendimiento -->
-                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                        <span><i class="bi bi-calculator me-2"></i>Rendimiento:</span>
-                        <span class="fw-semibold text-danger">${ unit.data?.rendimiento ?? 0 } km/h.</span>
-                      </li>
-                    <!-- Rendimiento -->
-                      
-                    <!-- Exceso de velocidad -->
-                      <li class="list-group-item d-flex justify-content-between align-items-center border-start border-4 rounded-start">
-                        <span><i class="bi bi-speedometer me-2"></i>Excesos de velocidad:</span>
-                        <span class="fw-semibold text-danger">${ unit.data?.excesos_de_velocidad ?? 0 } ocasiones</span>
-                      </li>
-                    <!-- Rendimiento -->
-
-                    </ul>
-                  </div>
-                  <div class="col-5">
-                    <div class="card text-center shadow-lg border-0 rounded-4">
-                      <div class="card-body">
-                        <h5 class="card-title text-muted fw-semibold">Estado de la unidad</h5>
-                        <h1 class="display-3 text-success fw-bold" id="cont-porcent">94%</h1>
-                        <p class="card-text text-secondary">calificacion segun su rendimiento</p>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
+                <h6 class="text-muted fw-bold text-uppercase border-bottom pb-2 mb-3">
+                  Desempeño general
+                </h6>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-sign-merge-left me-2 text-primary"></i>Km recorridos:</span>
+                    <span class="fw-semibold text-dark km">--</span>
+                  </li>
+                  <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-fuel-pump-diesel-fill me-2 text-success"></i>Combustible consumido:</span>
+                    <span class="fw-semibold text-dark combustible">--</span>
+                  </li>
+                  <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-calculator me-2 text-info"></i>Rendimiento:</span>
+                    <span class="fw-semibold text-dark rendimiento">--</span>
+                  </li>
+                  <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-speedometer me-2 text-warning"></i>Excesos de velocidad:</span>
+                    <span class="fw-semibold text-dark excesos">--</span>
+                  </li>
+                  <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-bootstrap-reboot me-2 text-danger"></i>Tiempo en ralentí:</span>
+                    <span class="fw-semibold text-dark ralenti">0 h</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-      <!-- Repetir dinámicamente -->`);
-  })
-}
 
-// export const htmListCard = (data, name, total = 0) => {
-//   clearHTML("#root-list-card");
-//   $('#root-card').addClass('d-none')
-//   $('#root-main-2').removeClass('d-none')
-//   $('.btn-card-categori').removeClass('bg-warning')
-//   $(`#root_card_${name}`).addClass('bg-warning'); 
-//   $('#root-categori').html(`${name.charAt(0).toUpperCase() + name.slice(1)}: ${total} unidades.`)
+          <!-- SECCIÓN: CALIFICACIÓN -->
+          <div class="col-md-5">
+            <div class="card text-center border-0 shadow-sm rounded-3 bg-light h-100">
+              <div class="card-body py-4 d-flex flex-column justify-content-center">
+                <h6 class="text-uppercase text-muted fw-bold border-bottom pb-2 mb-3">
+                  Calificación del rendimiento
+                </h6>
+                <h1 class="display-4 fw-bold text-success" id="cont-porcent">0%</h1>
+                <p class="text-secondary small mb-1">
+                  Basado en el rendimiento promedio (km/L)
+                </p>
+                <small class="text-muted fst-italic">
+                  A mayor porcentaje, mejor eficiencia de combustible.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
 
-//   let index = 0;
-//   sessionStorage.setItem('card_actived', name);
+      </div>
+    </div>
+  </div>
+`);
 
-//   for (const key in data) {
-//     if (Object.prototype.hasOwnProperty.call(data, key)) {
-//       const unit = data[key];
-
-//       const combustible = (unit.sensors.find(s => s.nombre === "GABINETE")) ? unit.sensors.find(s => s.nombre === "GABINETE") : 0;
-//       const ignicion = (unit.sensors.find(s => s.nombre === "IGNICION")) ? unit.sensors.find(s => s.nombre === "IGNICION") : 0;
-//       const voltaje = (unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO")) ? unit.sensors.find(s => s.nombre === "VOLTAJE EXTERNO") : 0;
-
-//       const estadoIcon = (ignicion.valor == 1) ? `toggle-on text-success` : `toggle-off text-danger`;
-//       const gabineteIcon = (combustible.valor != 1) ? `lock-fill text-danger` : `unlock-fill text-success`;
-//       const voltajeIcon = (voltaje.valor != 'N/A') ? `battery-charging text-warning` : `battery text-danger`;
-//       const estado = (ignicion.valor == 1) ? 'encendido' : 'apagado'
-
-//       $('#root-list-card').append(`
-//         <div class="accordion-item border rounded-4 shadow-sm mb-3">
-//           <h2 class="accordion-header" id="heading-${index}">
-//             <button class="accordion-button collapsed d-flex justify-content-between align-items-center rounded-top-4"
-//                     type="button"
-//                     id="button-accordion-${index}"
-//                     data-bs-toggle="collapse"
-//                     data-bs-target="#collapse-${index}"
-//                     onClick="getMessagesbyId('${unit.id_unidad}', ${index})"
-//                     aria-expanded="false"
-//                     aria-controls="collapse-${index}">
-//               <div class="d-flex flex-column flex-md-row w-100 justify-content-between align-items-center gap-2">
-//                 <div class="d-flex align-items-center gap-2">
-//                   <img src="${unit.icon}" class="img-thumbnail" style="width: 32px; height: 32px;" alt="Icono">
-//                   <span class="fw-semibold text-dark">${unit.name}</span>
-//                 </div>
-//                 <div class="d-flex align-items-center gap-2">
-//                   <i class="bi bi-${estadoIcon} fs-5"></i>
-//                   <i class="bi bi-${gabineteIcon} fs-5"></i>
-//                   <i class="bi bi-${voltajeIcon} fs-5"></i>
-//                 </div>
-//               </div>
-//             </button>
-//           </h2>
-//           <div id="collapse-${index}" class="accordion-collapse collapse" aria-labelledby="heading-${index}" data-bs-parent="#root-card">
-//             <div class="accordion-body bg-light-subtle rounded-bottom-4 px-3 py-3">
-
-//               <div class="row g-3">
-//                 <!-- Columna 1: Info -->
-//                 <div class="col-md-4" id="root-column-info-${index}">
-//                   <ul class="list-group list-group-flush">
-//                     <li class="list-group-item">
-//                       <small class="text-muted d-block"><i class="bi bi-clock me-1"></i> Último mensaje:</small>
-//                       <strong>${unit.dateParsed}</strong>
-//                     </li>
-
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <span><i class="bi bi-clock me-1"></i> Tiempo encendido:</span>
-//                         <span class="fw-semibold text-success" id="${unit.id_unidad}-encendido"></span>
-//                       </div>
-//                     </li>
-
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <span><i class="bi bi-clock me-1"></i> Tiempo apagado:</span>
-//                         <span class="fw-semibold text-danger" id="${unit.id_unidad}-apagado"></span>
-//                       </div>
-//                     </li>
-
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <span><i class="bi bi-${estadoIcon} me-1"></i> Estado:</span>
-//                         <span class="fw-semibold text-${ignicion.valor == 1 ? 'success' : 'danger'}">${estado.charAt(0).toUpperCase() + estado.slice(1)}</span>
-//                       </div>
-//                     </li>
-
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <span><i class="bi bi-${gabineteIcon} me-1"></i> Gabinete:</span>
-//                         <span class="fw-semibold text-${(combustible.valor != 1) ? 'danger' : 'success'}">
-//                           ${(combustible.valor == 'N/A') ? 'Cerrado' : (combustible.valor == 0 ? 'Cerrado' : 'Abierto')}
-//                         </span>
-//                       </div>
-//                     </li>
-
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <span><i class="bi bi-${voltajeIcon} me-1"></i> Voltaje:</span>
-//                         <span class="fw-semibold text-${(voltaje.valor === 'N/A') ? 'danger' : 'warning'}">
-//                           ${voltaje.valor}
-//                         </span>
-//                       </div>
-//                     </li>
-//                     <li class="list-group-item">
-//                       <div class="d-flex justify-content-between">
-//                         <button type="button" class="btn btn-warning w-100" onClick="getDetailUnit('${unit.name}', ${index})">Ver mas detalles de la unidad</button>
-//                       </div>
-//                     </li>
-//                   </ul>
-//                 </div>
-
-//                 <!-- Columna 2: Pie Chart -->
-//                 <div class="col-md-4 border-start">
-//                   <div class="h-100 d-flex align-items-center justify-content-center">
-//                     <div id="root-chart-day-pie-${index}" class="w-100"></div>
-//                   </div>
-//                 </div>
-
-//                 <!-- Columna 3: Bar Chart -->
-//                 <div class="col-md-4 border-start">
-//                   <div class="h-100 d-flex align-items-center justify-content-center">
-//                     <div id="root-chart-day-bar-${index}" class="w-100"></div>
-//                   </div>
-//                 </div>
-//               </div>
-
-//             </div>
-//           </div>
-//         </div>
-//       `);
-//       index++;
-//     }
-//   }
-// };
+  });
+};
