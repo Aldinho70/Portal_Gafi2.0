@@ -50,7 +50,7 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
 
 const getDataProps = async (unit) => {
     const _unit =  wialon.core.Session.getInstance().getItem(unit);
-    const messages = await getMessages(_unit.getId())
+    const messages = await getMessages( _unit?.getId() )
     // const messages = await getMessages(_unit)
     const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
 
@@ -69,6 +69,7 @@ const getDataProps = async (unit) => {
                 if (message.pos?.s > 95) {
                     cont_excesos_de_velocidad++;
                 }
+
             }
 
             if (message.pos?.s == 0) {
