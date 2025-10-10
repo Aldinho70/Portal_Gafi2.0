@@ -2,24 +2,16 @@ import timestamp from "./timestamp.js";
 import MessagesService from "./getMessages.js";
 import Haversine from "../../utils/Haversine.js";
 import Performance from "../../utils/Performance.js";
-import { convertTimestamp } from "../../utils/timestamp.js";
 import { getSensorValues, getSensorByName } from "./getSensors.js";
+import { convertTimestamp, getToFromByDays } from "../../utils/timestamp.js";
 import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia, calificarRendimiento } from "./getPerformanceFuel.js";
 
-const endDate = new Date(new Date());
-endDate.setHours(23, 59, 0, 0);
 
-const startDate = new Date(new Date());
-startDate.setDate(startDate.getDate() - 1);
-startDate.setHours(0, 0, 0, 0);
 
-let from = timestamp.formatLocalDate(startDate);
-let to = timestamp.formatLocalDate(endDate);
+// const messageService = new MessagesService(from, to);
+const { from, to } = getToFromByDays(7)
 
-from = timestamp.toUnixTimestamp(from)
-to = timestamp.toUnixTimestamp(to)
-
-const messageService = new MessagesService(from, to);
+const messageService = new MessagesService( from, to );
 
 export const createObjetUnit = async (_unit) => {
     return {

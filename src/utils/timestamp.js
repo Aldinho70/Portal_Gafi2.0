@@ -1,3 +1,5 @@
+import timestamp from "../wialon/utils/timestamp.js";
+
 export const convertTimestamp = (timestamp) =>{
     const _date =  new Date(timestamp * 1000);
     return (_date.toLocaleString());
@@ -34,4 +36,25 @@ export const formatearTiempo = (segundos) => {
     const minutos = Math.floor((segundos % 3600) / 60);
     const seg = segundos % 60;
     return `${horas}h ${minutos}m ${seg}s`;
-};
+}
+
+export const getToFromByDays = ( days ) => {
+
+    const endDate = new Date(new Date());
+    endDate.setHours(23, 59, 0, 0);
+
+    const startDate = new Date(new Date());
+    startDate.setDate(startDate.getDate() - days);
+    startDate.setHours(0, 0, 0, 0);
+
+    let from = timestamp.formatLocalDate(startDate);
+    let to = timestamp.formatLocalDate(endDate);
+
+    from = timestamp.toUnixTimestamp(from)
+    to = timestamp.toUnixTimestamp(to)
+
+    return({
+        from,
+        to   
+    })
+}
