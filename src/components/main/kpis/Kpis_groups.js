@@ -1,5 +1,8 @@
+import { getDataProps } from "../../../wialon/utils/getDataUnit.js";
+import Performance from "../../../utils/Performance.js";
+
 export const createKpisGroup = () => {
-    return `
+  return `
         <!-- SECCIÓN KPI DASHBOARD -->
         <div class="row gy-4 mb-4" id="root-card-kpis">
             <div class="col-12">
@@ -9,7 +12,7 @@ export const createKpisGroup = () => {
                             <h4 class="fw-bold text-primary mb-0">
                                 <i class="bi bi-graph-up-arrow me-2"></i> Indicadores de desempeño
                             </h4>
-                            <small class="text-muted fst-italic">Actualizado cada 24h</small>
+                            <small class="text-muted fst-italic">Resumen de los ultimos 7 dias.</small>
                         </div>
 
                         <!-- FILA 1: KPIs numéricos -->
@@ -18,7 +21,7 @@ export const createKpisGroup = () => {
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase">Rendimiento promedio</h6>
-                                        <h2 class="fw-bold text-success mb-0" id="kpi-rendimiento">3.8 km/L</h2>
+                                        <h2 class="fw-bold text-success mb-0" id="kpi-rendimiento">0 km/L</h2>
                                         <small class="text-muted">Meta: 4.5 km/L</small>
                                     </div>
                                 </div>
@@ -27,7 +30,7 @@ export const createKpisGroup = () => {
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase">Consumo total</h6>
-                                        <h2 class="fw-bold text-primary mb-0" id="kpi-consumo">8450 L</h2>
+                                        <h2 class="fw-bold text-primary mb-0" id="kpi-consumo">0 L</h2>
                                         <small class="text-muted">Últimos 7 días</small>
                                     </div>
                                 </div>
@@ -36,7 +39,7 @@ export const createKpisGroup = () => {
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase">Velocidad promedio</h6>
-                                        <h2 class="fw-bold text-warning mb-0" id="kpi-velocidad">68 km/h</h2>
+                                        <h2 class="fw-bold text-warning mb-0" id="kpi-velocidad">0 km/h</h2>
                                         <small class="text-muted">Rango ideal: 60-75 km/h</small>
                                     </div>
                                 </div>
@@ -45,7 +48,7 @@ export const createKpisGroup = () => {
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase">Excesos detectados</h6>
-                                        <h2 class="fw-bold text-danger mb-0" id="kpi-excesos">14</h2>
+                                        <h2 class="fw-bold text-danger mb-0" id="kpi-excesos">0</h2>
                                         <small class="text-muted">Semana actual</small>
                                     </div>
                                 </div>
@@ -116,42 +119,124 @@ export const createKpisGroup = () => {
             </div>
         </div>
     `;
-}
+};
 
 export const initCharts = () => {
-    Highcharts.chart('chart-rendimiento', {
-        chart: { type: 'gauge', backgroundColor: 'transparent' },
-        title: { text: '' },
-        pane: { startAngle: -150, endAngle: 150 },
-        yAxis: {
-            min: 0, max: 6, title: { text: 'km/L' },
-            plotBands: [
-                { from: 0, to: 2, color: '#dc3545' },
-                { from: 2, to: 4, color: '#ffc107' },
-                { from: 4, to: 6, color: '#28a745' }
-            ]
-        },
-        series: [{ name: 'Rendimiento', data: [3.5], tooltip: { valueSuffix: ' km/L' } }]
-    });
+  Highcharts.chart("chart-rendimiento", {
+    chart: { type: "gauge", backgroundColor: "transparent" },
+    title: { text: "" },
+    pane: { startAngle: -150, endAngle: 150 },
+    yAxis: {
+      min: 0,
+      max: 6,
+      title: { text: "km/L" },
+      plotBands: [
+        { from: 0, to: 2, color: "#dc3545" },
+        { from: 2, to: 4, color: "#ffc107" },
+        { from: 4, to: 6, color: "#28a745" },
+      ],
+    },
+    series: [
+      { name: "Rendimiento", data: [3.5], tooltip: { valueSuffix: " km/L" } },
+    ],
+  });
 
-    Highcharts.chart('chart-combustible', {
-        chart: { type: 'column', backgroundColor: 'transparent' },
-        title: { text: '' },
-        xAxis: { categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] },
-        yAxis: { title: { text: 'Litros' } },
-        series: [{ name: 'Consumo', data: [120, 135, 150, 160, 180, 170, 155], color: '#007bff' }]
-    });
+  Highcharts.chart("chart-combustible", {
+    chart: { type: "column", backgroundColor: "transparent" },
+    title: { text: "" },
+    xAxis: { categories: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"] },
+    yAxis: { title: { text: "Litros" } },
+    series: [
+      {
+        name: "Consumo",
+        data: [120, 135, 150, 160, 180, 170, 155],
+        color: "#007bff",
+      },
+    ],
+  });
 
-    Highcharts.chart('chart-excesos', {
-        chart: { type: 'pie', backgroundColor: 'transparent' },
-        title: { text: '' },
-        plotOptions: { pie: { dataLabels: { enabled: true, format: '{point.name}: {point.y}' } } },
-        series: [{
-            name: 'Eventos',
-            data: [
-                { name: 'Dentro del límite', y: 85, color: '#28a745' },
-                { name: 'Excesos', y: 15, color: '#dc3545' }
-            ]
-        }]
-    });
-}
+  Highcharts.chart("chart-excesos", {
+    chart: { type: "pie", backgroundColor: "transparent" },
+    title: { text: "" },
+    plotOptions: {
+      pie: { dataLabels: { enabled: true, format: "{point.name}: {point.y}" } },
+    },
+    series: [
+      {
+        name: "Eventos",
+        data: [
+          { name: "Dentro del límite", y: 85, color: "#28a745" },
+          { name: "Excesos", y: 15, color: "#dc3545" },
+        ],
+      },
+    ],
+  });
+};
+
+export const getGroupSummary = async (units) => {
+  try {
+    // Ejecutar todas las consultas en paralelo
+    const resultados = await Promise.all(
+      units.map((unit) => getDataProps(unit.id_unidad))
+    );
+
+    // Filtrar nulos
+    const validos = resultados.filter((r) => r !== null);
+
+    if (!validos.length) {
+      console.warn("No hay datos válidos para mostrar en KPIs.");
+      return;
+    }
+
+    // Totales
+    const total_km = validos.reduce((acc, r) => acc + r.km_recorridos, 0);
+    const total_combustible = validos.reduce(
+      (acc, r) => acc + r.combustible_utilizado,
+      0
+    );
+    const total_excesos = validos.reduce(
+      (acc, r) => acc + r.excesos_de_velocidad,
+      0
+    );
+
+    // Cálculos derivados
+    const rendimiento_promedio =
+      total_combustible > 0 ? total_km / total_combustible : 0;
+
+    const meta_rendimiento = 4.5;
+    const porcentaje_meta = Math.min(
+      (rendimiento_promedio / meta_rendimiento) * 100,
+      100
+    );
+
+    // 🧭 Actualizar los KPIs en el HTML
+    document.getElementById("kpi-rendimiento").textContent =
+      `${rendimiento_promedio.toFixed(2)} km/L`;
+
+    document.getElementById("kpi-consumo").textContent =
+      `${total_combustible.toFixed(0)} L`;
+
+    document.getElementById("kpi-excesos").textContent =
+      total_excesos.toString();
+
+    // (Opcional) calcular velocidad promedio si tiene esos datos
+    document.getElementById("kpi-velocidad").textContent = `0 km/h`;
+
+    // Barra de progreso
+    const progressBar = document.getElementById("progress-rendimiento");
+    progressBar.style.width = `${porcentaje_meta.toFixed(0)}%`;
+    progressBar.textContent = `${porcentaje_meta.toFixed(0)}%`;
+
+    // Color dinámico según cumplimiento
+    if (porcentaje_meta < 60)
+      progressBar.className = "progress-bar bg-danger";
+    else if (porcentaje_meta < 90)
+      progressBar.className = "progress-bar bg-warning";
+    else progressBar.className = "progress-bar bg-success";
+
+    console.log("KPIs actualizados correctamente ✅");
+
+  } catch (error) {
+    console.error("Error al calcular el resumen de grupo:", error);
+  }
+};

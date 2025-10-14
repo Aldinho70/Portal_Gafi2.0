@@ -3,10 +3,11 @@ import wialonSDK from './src/wialon/sdk/wialonSDK.js';
 import { getFechaActual } from './src/utils/timestamp.js';
 import MessagesService from './src/wialon/utils/getMessages.js';
 import { getGroups } from './src/components/main/Groups/Groups.js';
-import { createObjetUnit, loadUnitsDataInBatches } from './src/wialon/utils/getDataUnit.js';
-import { viewMap3D, quitMap3D } from './src/components/main/GoogleMaps/GoogleMaps.js';
+import { getGroupSummary } from './src/components/main/kpis/Kpis_groups.js';
 import { htmlCreateCard /*htmListCard*/ } from './src/components/main/main.js';
 import { htmlCreateNotification } from './src/components/main/Notifications.js';
+import { viewMap3D, quitMap3D } from './src/components/main/GoogleMaps/GoogleMaps.js';
+import { createObjetUnit, loadUnitsDataInBatches } from './src/wialon/utils/getDataUnit.js';
 import { createSidebarDetailBody } from './src/components/main/SidebarDetailUnit/SidebarDetailUnit.js';
 
 window.createSidebarDetailBody = createSidebarDetailBody;
@@ -55,15 +56,21 @@ export async function iniciarWialon() {
 
         for (const _unit of data_units) {
             // const unidad = crearObjetoUnidad(_unit);
-            const unidad = await createObjetUnit(_unit);
+            // const unidad = await createObjetUnit(_unit);
             // clasificarUnidad(unidad, _unit);
-            _units.push(unidad);
+            // _units.push(unidad);
+            
+            _units.push(await createObjetUnit(_unit));
         }
+        // console.log(_units);
+        
 
         $(`#root_card_${_group_select.replaceAll(' ', '_')}`).addClass('bg-warning');
 
-        htmlCreateCard(_units);
-        loadUnitsDataInBatches(_units, 10);
+        htmlCreateCard( _units );
+        // getGroupSummary( _units );
+        
+        loadUnitsDataInBatches( _units, 10 );
 
         if (sessionStorage.getItem('card_actived')) {
             $(`#root_card_${sessionStorage.getItem('card_actived')}`).addClass('bg-warning');
@@ -75,6 +82,7 @@ export async function iniciarWialon() {
             }
         }
         $("#loading").fadeOut();
+        console.log( await getGroupSummary( _units ) );
     } catch (error) {
         console.error("Error al iniciar Wialon:", error);
     }

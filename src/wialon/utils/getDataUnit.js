@@ -6,13 +6,6 @@ import { getSensorValues, getSensorByName } from "./getSensors.js";
 import { convertTimestamp, getToFromByDays } from "../../utils/timestamp.js";
 import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia, calificarRendimiento } from "./getPerformanceFuel.js";
 
-
-
-// const messageService = new MessagesService(from, to);
-const { from, to } = getToFromByDays(7)
-
-const messageService = new MessagesService( from, to );
-
 export const createObjetUnit = async (_unit) => {
     return {
         name: _unit.getName(),
@@ -40,70 +33,65 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
     }
 }
 
-const getDataProps = async (unit) => {
-    const _unit =  wialon.core.Session.getInstance().getItem(unit);
-    const messages = await getMessages( _unit?.getId() )
-    // const messages = await getMessages(_unit)
-    const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
+export const getDataProps = async (unit) => {
+  const _unit = wialon.core.Session.getInstance().getItem(unit);
+  const messages = await getMessages(_unit?.getId());
+  const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
 
-    if (messages.length) {
-        const coordinates = [];
-        const combustibles = [];
-        let rendimiento;
-        let combustibleLimpio;
-        let cont_excesos_de_velocidad = 0;
+  if (messages.length) {
+    const coordinates = [];
+    const combustibles = [];
+    let cont_excesos_de_velocidad = 0;
 
-        messages.map(message => {
+    messages.map(message => {
+      if (message.pos?.x && message.pos?.y) {
+        coordinates.push([message.pos.x, message.pos.y]);
+        if (message.pos?.s > 95) cont_excesos_de_velocidad++;
+      }
 
-            if (message.pos?.x && message.pos?.y) {
-                coordinates.push([message.pos.x, message.pos.y])
+      if (message.pos?.s === 0) {
+        const combustible = _unit.calculateSensorValue(sensor_fuel, message);
+        if (combustible != -348201.3876) {
+          const time = new Date(message.t * 1000).toLocaleTimeString('es-MX', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+          if (timestamp.isQuarterHour(time, 0)) {
+            combustibles.push({
+              timestamp: message.t,
+              hour: time,
+              fuel: Math.round(combustible),
+              speed: message.pos.s,
+              mov: message.p.movement_sens
+            });
+          }
+        }
+      }
+    });
 
-                if (message.pos?.s > 95) {
-                    cont_excesos_de_velocidad++;
-                }
+    let combustibleLimpio = eliminarRepetidosConsecutivos(combustibles);
+    combustibleLimpio = agruparPorHora(combustibleLimpio);
+    combustibleLimpio = agruparPorDia(combustibleLimpio);
 
-            }
+    const distancia = Math.round(Haversine.calculateDistanceByLatLong(coordinates));
+    const totalDescarga = Math.round(combustibleLimpio.totalDescarga);
+    const rendimiento = Performance.calcularRendimiento(distancia, totalDescarga);
 
-            if (message.pos?.s == 0) {
-                const combustible = _unit.calculateSensorValue(sensor_fuel, message);
+    return {
+      km_recorridos: distancia,
+      combustible_utilizado: totalDescarga,
+      rendimiento,
+      excesos_de_velocidad: cont_excesos_de_velocidad,
+    };
+  }
 
-                if (combustible != -348201.3876) {
-                    const time = new Date(message.t * 1000).toLocaleTimeString('es-MX', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    })
+  // 👇 Retornar nulo si no hay mensajes
+  return null;
+};
 
-                    if (timestamp.isQuarterHour(time, 0)) {
-                        combustibles.push({
-                            'timestamp': message.t,
-                            'hour': time,
-                            'fuel': Math.round(combustible),
-                            'speed': message.pos.s,
-                            'mov': message.p.movement_sens
-                        })
-                    }
-                }
-            }
-        })
 
-        combustibleLimpio = eliminarRepetidosConsecutivos(combustibles)
-        combustibleLimpio = agruparPorHora(combustibleLimpio);
-        combustibleLimpio = agruparPorDia(combustibleLimpio);
-        rendimiento = Performance.calcularRendimiento(
-            Math.round(Haversine.calculateDistanceByLatLong(coordinates)),
-            Math.round(combustibleLimpio.totalDescarga)
-        );
-
-        return {
-            'km_recorridos': Haversine.calculateDistanceByLatLong(coordinates),
-            'combustible_utilizado': combustibleLimpio.totalDescarga,
-            'rendimiento': rendimiento,
-            'excesos_de_velocidad': cont_excesos_de_velocidad,
-        };
-    }
-}
-
+const messageService = new MessagesService(...Object.values(getToFromByDays(7)));
 const getMessages = async (unit) => {
     const unit_messages = await messageService.loadMessages(unit);
     return unit_messages.messages

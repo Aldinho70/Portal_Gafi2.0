@@ -10,7 +10,10 @@ $(document).ready(function () {
       ${ createLoader() }
       ${ createTimedata() }  
 
-      <div class="row g-3 mb-4" id="root-card-groups"></div>
+      <div class="row g-3 mb-4" id="root-card-groups">
+
+      </div>
+
       <hr class="border border-dark border-3 opacity-75"/>
 
       <div class="container-fluid px-0" id="root-main-1" style="max-height: 75vh; overflow-y: auto">
@@ -19,11 +22,13 @@ $(document).ready(function () {
         <hr class="border border-primary border-3 opacity-75"/>
 
         <!-- TODAS LAS UNIDADES -->
-        <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card"></div>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card">
+        
+        </div>
       </div>
     </div>
 
-    ${createModalNotification()}
+    ${ createModalNotification() }
     <div class="modal" tabindex="-1" id="unitDetailModal"></div>
   `);
 
