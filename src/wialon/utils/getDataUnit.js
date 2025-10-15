@@ -3,6 +3,7 @@ import MessagesService from "./getMessages.js";
 import Haversine from "../../utils/Haversine.js";
 import Performance from "../../utils/Performance.js";
 import { getSensorValues, getSensorByName } from "./getSensors.js";
+import { getGroupSummary } from "../../components/main/kpis/Kpis_groups.js";
 import { convertTimestamp, getToFromByDays } from "../../utils/timestamp.js";
 import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia, calificarRendimiento } from "./getPerformanceFuel.js";
 
@@ -31,6 +32,8 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
 
         await Promise.all(promises); // Espera que termine el lote
     }
+
+    await getGroupSummary( units );
 }
 
 export const getDataProps = async (unit) => {
@@ -45,12 +48,18 @@ export const getDataProps = async (unit) => {
   if (messages.length) {
     const coordinates = [];
     const combustibles = [];
+    const velocidades = [];
     let cont_excesos_de_velocidad = 0;
+    let cont_no_excesos_de_velocidad = 0;
 
     messages.map( async message => {
       if (message.pos?.x && message.pos?.y) {
         coordinates.push([message.pos.x, message.pos.y]);
-        if (message.pos?.s > 95) cont_excesos_de_velocidad++;
+        if (message.pos?.s > 95){
+          cont_excesos_de_velocidad++;
+        }else if( message.pos?.s > 0 && message.pos?.s < 90 ){
+          cont_no_excesos_de_velocidad++;
+        } 
       }
 
       if ( message.pos?.s == 0 ) {
@@ -73,6 +82,8 @@ export const getDataProps = async (unit) => {
             });
           }
         }
+      }else{
+        velocidades.push( message.pos?.s ?? 0 )
       }
     });
 
@@ -89,6 +100,8 @@ export const getDataProps = async (unit) => {
       combustible_utilizado: totalDescarga,
       rendimiento,
       excesos_de_velocidad: cont_excesos_de_velocidad,
+      no_excesos_de_velocidad: cont_no_excesos_de_velocidad,
+      velocidades: velocidades,
     };
   }
 
@@ -108,7 +121,7 @@ const updateUnitCard = (id, data) => {
 
     card.find('.km').text(`${Math.round(data?.km_recorridos ?? 0)} km`);
     card.find('.combustible').text(`${Math.round(data?.combustible_utilizado ?? 0)} L`);
-    card.find('.rendimiento').text(`${data?.rendimiento ?? 0} km/L`);
+    card.find('.rendimiento').text(`${Math.round(data?.rendimiento ?? 0)} km/L`);
     card.find('.excesos').text(`${data?.excesos_de_velocidad ?? 0} veces`);
     card.find('#cont-porcent').text( `${calificarRendimiento( data?.rendimiento ?? 0 )}%` );
 

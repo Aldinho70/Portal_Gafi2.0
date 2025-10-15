@@ -19,6 +19,7 @@ $(document).ready(function () {
       <div class="container-fluid px-0" id="root-main-1" style="max-height: 75vh; overflow-y: auto">
         ${ createKpisGroup() }
 
+        
         <hr class="border border-primary border-3 opacity-75"/>
 
         <!-- TODAS LAS UNIDADES -->
@@ -33,6 +34,7 @@ $(document).ready(function () {
   `);
 
   $("#loading").fadeIn();
+  $("#root_kpis").addClass('visually-hidden');
 
   initCharts();
 });

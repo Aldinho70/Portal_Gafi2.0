@@ -91,10 +91,12 @@ export async function iniciarWialon() {
 const getInfocard = (name, owner = '', total = 0, group_select) => {
     if (group_select) {
         $("#loading").fadeIn();
+        $("#loading_kpis").fadeIn();
         _group_select = group_select;
         wialonSDK.logout(TOKEN);
         clearHTML("#root-list-card", "#root-categori");
         $('#root-card').removeClass('d-none')
+        $('#root_kpis').addClass('visually-hidden')
     } else {
         // const all_data = { _voltaje, _gabinete, _estado };
         // htmListCard(all_data[owner][name], name, total);
