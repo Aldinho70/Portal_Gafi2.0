@@ -36,22 +36,28 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
 export const getDataProps = async (unit) => {
   const _unit = wialon.core.Session.getInstance().getItem(unit);
   const messages = await getMessages(_unit?.getId());
-  const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
+  
+  // const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
+  const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id
+    ? _unit.getSensor(getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors()).id)
+    : 0;
 
   if (messages.length) {
     const coordinates = [];
     const combustibles = [];
     let cont_excesos_de_velocidad = 0;
 
-    messages.map(message => {
+    messages.map( async message => {
       if (message.pos?.x && message.pos?.y) {
         coordinates.push([message.pos.x, message.pos.y]);
         if (message.pos?.s > 95) cont_excesos_de_velocidad++;
       }
 
-      if (message.pos?.s === 0) {
+      if ( message.pos?.s == 0 ) {
         const combustible = _unit.calculateSensorValue(sensor_fuel, message);
+        
         if (combustible != -348201.3876) {
+          
           const time = new Date(message.t * 1000).toLocaleTimeString('es-MX', {
             hour: '2-digit',
             minute: '2-digit',
@@ -89,7 +95,6 @@ export const getDataProps = async (unit) => {
   // 👇 Retornar nulo si no hay mensajes
   return null;
 };
-
 
 const messageService = new MessagesService(...Object.values(getToFromByDays(7)));
 const getMessages = async (unit) => {

@@ -82,7 +82,7 @@ export async function iniciarWialon() {
             }
         }
         $("#loading").fadeOut();
-        console.log( await getGroupSummary( _units ) );
+        // console.log( await getGroupSummary( _units ) );
     } catch (error) {
         console.error("Error al iniciar Wialon:", error);
     }
