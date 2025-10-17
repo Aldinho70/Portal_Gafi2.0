@@ -4,7 +4,7 @@ import Haversine from "../../utils/Haversine.js";
 import Performance from "../../utils/Performance.js";
 import { getSensorValues, getSensorByName } from "./getSensors.js";
 import { getGroupSummary } from "../../components/main/kpis/Kpis_groups.js";
-import { convertTimestamp, getToFromByDays } from "../../utils/timestamp.js";
+import { convertTimestamp, getToFromByDays, calcularTiempoTotalByArrayTimestamp } from "../../utils/timestamp.js";
 import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia, calificarRendimiento } from "./getPerformanceFuel.js";
 
 export const createObjetUnit = async (_unit) => {
@@ -49,6 +49,7 @@ export const getDataProps = async (unit) => {
     const coordinates = [];
     const combustibles = [];
     const velocidades = [];
+    // const ralenti = [];
     let cont_excesos_de_velocidad = 0;
     let cont_no_excesos_de_velocidad = 0;
 
@@ -63,6 +64,11 @@ export const getDataProps = async (unit) => {
       }
 
       if ( message.pos?.s == 0 ) {
+        
+        // if( message?.i > 0 ){
+        //   ralenti.push( message.t )
+        // }
+        
         const combustible = _unit.calculateSensorValue(sensor_fuel, message);
         
         if (combustible != -348201.3876) {
@@ -87,6 +93,9 @@ export const getDataProps = async (unit) => {
       }
     });
 
+    // console.log( ralenti );
+    // console.log( calcularTiempoTotalByArrayTimestamp(ralenti) );
+    
     let combustibleLimpio = eliminarRepetidosConsecutivos(combustibles);
     combustibleLimpio = agruparPorHora(combustibleLimpio);
     combustibleLimpio = agruparPorDia(combustibleLimpio);

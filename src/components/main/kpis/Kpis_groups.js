@@ -77,7 +77,7 @@ export const createKpisGroup = () => {
                             <div class="col-md-4">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Consumo Total de Combustible</h6>
+                                        <!-- <h6 class="fw-bold text-muted text-uppercase mb-2">Consumo Total de Combustible</h6>-->
                                         <div id="chart-combustible" style="height:200px;"></div>
                                     </div>
                                 </div>
@@ -130,23 +130,7 @@ export const createKpisGroup = () => {
 };
 
 export const initCharts = () => {
-  
 
-  Highcharts.chart("chart-combustible", {
-    chart: { type: "column", backgroundColor: "transparent" },
-    title: { text: "" },
-    xAxis: { categories: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"] },
-    yAxis: { title: { text: "Litros" } },
-    series: [
-      {
-        name: "Consumo",
-        data: [120, 135, 150, 160, 180, 170, 155],
-        color: "#007bff",
-      },
-    ],
-  });
-
-  
 };
 
 export const getGroupSummary = async (units) => {
@@ -203,7 +187,7 @@ export const getGroupSummary = async (units) => {
       (rendimiento_promedio / meta_rendimiento) * 100,
       100
     );
-
+    
     // 🧭 Actualizar los KPIs en el HTML
     document.getElementById("kpi-rendimiento").textContent =
       `${rendimiento_promedio.toFixed(2)} km/L`;
@@ -231,7 +215,8 @@ export const getGroupSummary = async (units) => {
 
     // console.log("KPIs actualizados correctamente ✅");
 
-    initChart_Rendimiento( rendimiento_promedio )
+    initChart_Rendimiento( rendimiento_promedio );
+    initChart_Comparativa_Combustible_vs_kilometros( total_km, total_combustible );
 
   $("#loading_kpis").fadeOut()
   $("#root_kpis").removeClass('visually-hidden')
@@ -279,4 +264,27 @@ const initChart_Porcentaje_velocidades = ( excesos_de_velocidad, no_excesos_de_v
       },
     ],
   });
+}
+
+const initChart_Comparativa_Combustible_vs_kilometros = ( km, litros ) => {
+  Highcharts.chart('chart-combustible', {
+  chart: { type: 'bar', backgroundColor: 'transparent' },
+  title: { text: 'Comparativa de km recorridos vs combutible consumido' },
+  xAxis: {
+    categories: ['Totales']
+  },
+  yAxis: {
+    min: 0,
+    title: { text: 'Valores Totales' }
+  },
+  series: [{
+    name: 'Km Recorridos',
+    data: [km],
+    color: '#28a745'
+  }, {
+    name: 'Combustible Consumido',
+    data: [litros],
+    color: '#007bff'
+  }]
+});
 }
