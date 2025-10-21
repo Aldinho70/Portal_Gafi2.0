@@ -1,6 +1,7 @@
 import timestamp from "./timestamp.js";
 import MessagesService from "./getMessages.js";
 import Haversine from "../../utils/Haversine.js";
+import { ejecutarReporte } from "./getReports.js";
 import Performance from "../../utils/Performance.js";
 import { getSensorValues, getSensorByName } from "./getSensors.js";
 import { getGroupSummary } from "../../components/main/kpis/Kpis_groups.js";
@@ -15,6 +16,7 @@ export const createObjetUnit = async (_unit) => {
         dateParsed: convertTimestamp(_unit.getLastMessage().t),
         id_unidad: _unit.getId(),
         icon: _unit.getIconUrl(32),
+        
         // data: await getDataProps(_unit),
     };
 }
@@ -24,7 +26,7 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
         const batch = units.slice(i, i + batchSize);
 
         const promises = batch.map(async (unit) => {
-            const data = await getDataProps(unit.id_unidad); // depende de cómo guardó la ref.
+            const data = await getDataProps2(unit); // depende de cómo guardó la ref.
             
             unit.data = data;
             updateUnitCard(unit.id_unidad, data);
@@ -36,8 +38,18 @@ export const loadUnitsDataInBatches =  async (units, batchSize = 10)  => {
     await getGroupSummary( units );
 }
 
+export const getDataProps2 = async (unit) => {
+  const session = wialon.core.Session.getInstance();
+  const resources = session.getItems("avl_resource");
+  // console.log(resources);
+  
+  
+  await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7, session )
+  // ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7 );
+};
+
 export const getDataProps = async (unit) => {
-  const _unit = wialon.core.Session.getInstance().getItem(unit);
+  const _unit = wialon.core.Session.getInstance().getItem(unit.id_unidad);
   const messages = await getMessages(_unit?.getId());
   
   // const sensor_fuel = getSensorByName('COMBUSTIBLE DASHBOARD', _unit.getSensors())?.id ?? 0;
@@ -65,9 +77,7 @@ export const getDataProps = async (unit) => {
 
       if ( message.pos?.s == 0 ) {
         
-        // if( message?.i > 0 ){
-        //   ralenti.push( message.t )
-        // }
+        // if( message?.i > 0
         
         const combustible = _unit.calculateSensorValue(sensor_fuel, message);
         
