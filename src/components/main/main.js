@@ -98,7 +98,7 @@ export const htmlCreateCard = (data) => {
                         <span class="fw-semibold text-dark rendimiento">--</span>
                       </li>
                       <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                        <span><i class="bi bi-speedometer me-2 text-warning"></i>Excesos de velocidad:</span>
+                        <span><i class="bi bi-speedometer me-2 text-warning"></i>Velocidad maxima:</span>
                         <span class="fw-semibold text-dark excesos">--</span>
                       </li>
                       <li class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">

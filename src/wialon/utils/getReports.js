@@ -1,3 +1,5 @@
+import { updateUnitCard2 } from "./getDataUnit.js";
+
 export const ejecutarReporte = async (resources, reportName, objectName, days) => {
   const now = Math.floor(Date.now() / 1000);
   const weekAgo = now - days * 24 * 60 * 60;
@@ -33,18 +35,26 @@ export const ejecutarReporte = async (resources, reportName, objectName, days) =
     target.getId(),
     0,
     interval,
-    (code, data) => {
+    async (code, data) => {
       if (code) {
-        console.error("Error:", wialon.core.Errors.getErrorText(code));
+        // console.log(target.getName());
+        
+        // console.error("Error:", wialon.core.Errors.getErrorText(code));
         return;
       }
 
       if (!data.getTables().length) {
-        console.warn("Sin datos en el reporte");
+        // console.warn("Sin datos en el reporte");
+        // console.log(target.getName());
+        
         return;
+      }else{
+        // console.log("✅ Reporte ejecutado:", await arrayToObject(data.getStatistics()));
+        updateUnitCard2( target.getId(), arrayToObject(data.getStatistics()) )
+        // return await data.getStatistics();
       }
 
-      console.log("✅ Reporte ejecutado:", data.getStatistics());
+      
     }
   );
 };

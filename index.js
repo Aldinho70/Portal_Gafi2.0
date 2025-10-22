@@ -58,7 +58,7 @@ export async function iniciarWialon() {
     const all_units = session.getItems("avl_unit");
     
     // ejecutarReporte( resources, "COMBUSTIBLE POR GRUPO GAFI", "GAFI ABA OPE CHI", weekAgo, now );
-    console.log( await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7 ));
+    // console.log( await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7 ));
 
     resources.forEach((resource) => {
       resource.addListener("messageRegistered", htmlCreateNotification);
@@ -79,7 +79,7 @@ export async function iniciarWialon() {
       // clasificarUnidad(unidad, _unit);
       // _units.push(unidad);
       _units.push(await createObjetUnit(_unit));
-      console.log( await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", _unit.getName(), 7 ));
+      await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", _unit.getName(), 7 );
     }
     // console.log(_units);
     
