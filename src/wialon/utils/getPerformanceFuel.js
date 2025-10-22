@@ -146,14 +146,18 @@ export function agruparPorDia(objetoPorHora) {
 }
 
 export const calificarRendimiento = (rendimiento) => {
-  if (rendimiento <= 0) return 0; // Rendimiento inválido o sin datos
+    // console.log(rendimiento);
+    
+  if (rendimiento <= 0) return 10; // Rendimiento inválido o sin datos
 
+      // Muy malo (alto consumo)
   if (rendimiento < 5) return 25;     // Muy malo (alto consumo)
   if (rendimiento < 10) return 50;     // Malo
   if (rendimiento < 15) return 75;     // Regular
   if (rendimiento < 20) return 100;     // Bueno
+  
 //   if (rendimiento < 5) return 85;     // Muy bueno
 //   if (rendimiento >= 5) return 100;   // Excelente
 
-  return 0; // fallback
+  return 25; // fallback
 };

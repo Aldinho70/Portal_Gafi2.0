@@ -86,8 +86,13 @@ export const createKpisGroup = () => {
                             <div class="col-md-4">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Porcentaje de excesos de Velocidad</h6>
-                                        <div id="chart-excesos" style="height:200px;"></div>
+                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Litros consumidos en ralenti</h6>
+                                        <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-ralenti">0</h2>
+                                        
+                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en ralenti</h6>
+                                        <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-tiempo_ralenti">0</h2>
+                                        
+                                        <!--<div id="chart-excesos" style="height:200px;"></div>-->
                                     </div>
                                 </div>
                             </div>
@@ -129,11 +134,100 @@ export const createKpisGroup = () => {
     `;
 };
 
-export const initCharts = () => {
+export const getGroupSummary = async (units) => {
+  try {
+    // Ejecutar todas las consultas en paralelo
+    const resultados = await Promise.all(
+      units.map((unit) => getDataProps(unit.id_unidad))
+    );
+    
+    // Filtrar nulos
+    const validos = resultados.filter((r) => r !== null);
 
+    if (!validos.length) {
+      console.warn("No hay datos válidos para mostrar en KPIs.");
+      return;
+    }
+
+    // Totales
+    const total_km = validos.reduce((acc, r) => acc + r.km_recorridos, 0);
+    const total_combustible = validos.reduce(
+      (acc, r) => acc + r.combustible_utilizado,
+      0
+    );
+
+    const total_excesos = validos.reduce(
+      (acc, r) => acc + r.excesos_de_velocidad,
+      0
+    );
+
+    const total_no_excesos = validos.reduce(
+      (acc, r) => acc + r.no_excesos_de_velocidad,
+      0
+    );
+
+    const total_eventos = total_excesos + total_no_excesos;
+    const porcentaje_excesos =
+      Math.round(total_eventos > 0 ? (total_excesos / total_eventos) * 100 : 0);
+    const porcentaje_no_excesos =
+      Math.round(total_eventos > 0 ? (total_no_excesos / total_eventos) * 100 : 0);
+
+    initChart_Porcentaje_velocidades( porcentaje_excesos, porcentaje_no_excesos )
+
+    const todas_las_velocidades = validos.flatMap(r => r.velocidades ?? []);
+    const velocidad_promedio = todas_las_velocidades.length
+      ? todas_las_velocidades.reduce((acc, v) => acc + v, 0) / todas_las_velocidades.length
+      : 0;
+
+    // Cálculos derivados
+    const rendimiento_promedio =
+      Math.round(total_combustible > 0 ? total_km / total_combustible : 0);
+
+    const meta_rendimiento = 4.5;
+    const porcentaje_meta = Math.min(
+      (rendimiento_promedio / meta_rendimiento) * 100,
+      100
+    );
+    
+    // 🧭 Actualizar los KPIs en el HTML
+    document.getElementById("kpi-rendimiento").textContent =
+      `${rendimiento_promedio.toFixed(2)} km/L`;
+
+    document.getElementById("kpi-consumo").textContent =
+      `${total_combustible.toFixed(0)} L`;
+
+    document.getElementById("kpi-velocidad").textContent =
+      `${Math.round(velocidad_promedio)} km/h`;
+
+    document.getElementById("kpi-excesos").textContent =
+      total_excesos.toString();
+
+    // Barra de progreso
+    const progressBar = document.getElementById("progress-rendimiento");
+    progressBar.style.width = `${porcentaje_meta.toFixed(0)}%`;
+    progressBar.textContent = `${porcentaje_meta.toFixed(0)}%`;
+
+    // Color dinámico según cumplimiento
+    if (porcentaje_meta < 60)
+      progressBar.className = "progress-bar bg-danger";
+    else if (porcentaje_meta < 90)
+      progressBar.className = "progress-bar bg-warning";
+    else progressBar.className = "progress-bar bg-success";
+
+    // console.log("KPIs actualizados correctamente ✅");
+
+    initChart_Rendimiento( rendimiento_promedio );
+    initChart_Comparativa_Combustible_vs_kilometros( total_km, total_combustible );
+
+  $("#loading_kpis").fadeOut()
+  $("#root_kpis").removeClass('visually-hidden')
+
+  } catch (error) {
+    console.error("Error al calcular el resumen de grupo:", error);
+  }
 };
 
-export const getGroupSummary = async (units) => {
+export const getGroupSummary2 = async ( data ) => {
   try {
     // Ejecutar todas las consultas en paralelo
     const resultados = await Promise.all(
@@ -287,4 +381,74 @@ const initChart_Comparativa_Combustible_vs_kilometros = ( km, litros ) => {
     color: '#007bff'
   }]
 });
+}
+
+export const calcularTotalesYPromedios = (arr) => {
+  if (!Array.isArray(arr) || arr.length === 0) return {};
+
+  const totales = {};
+  const promedios = {};
+
+  arr.forEach(obj => {
+    for (const [clave, valor] of Object.entries(obj)) {
+      // Extraer solo el número (permite decimales y negativos)
+      const num = parseFloat(valor.toString().replace(',', '.'));
+
+      if (!isNaN(num)) {
+        if (!totales[clave]) totales[clave] = 0;
+        totales[clave] += num;
+      }
+    }
+  });
+
+  // Calcular promedios
+  for (const clave in totales) {
+    promedios[clave] = totales[clave] / arr.length;
+  }
+
+  // console.log( totales )
+  // console.log( promedios )
+
+  document.getElementById("kpi-rendimiento").textContent =
+      `${promedios?.["RENDIMIENTO DE UNIDAD"].toFixed(2)} km/L`;
+
+    document.getElementById("kpi-consumo").textContent =
+      `${totales?.["COMBUSTIBLE CONSUMIDO"].toFixed(2)} l`;
+
+    document.getElementById("kpi-velocidad").textContent =
+      `33 km/h`;
+
+    document.getElementById("kpi-excesos").textContent =
+      `${promedios?.["Velocidad máxima en viajes"].toFixed(2)} km/h`;
+
+    document.getElementById("kpi-consumo-ralenti").textContent =
+      `${Math.round(totales?.["CONSUMIDO EN RALENTI"])} l`;
+
+    document.getElementById("kpi-consumo-tiempo_ralenti").textContent =
+      `${Math.round(totales?.["Horas de motor en ralentí"])} h`;
+
+    initChart_Rendimiento( promedios?.["RENDIMIENTO DE UNIDAD"].toFixed(2) );
+    initChart_Comparativa_Combustible_vs_kilometros( Math.round(totales?.["KILOMETRAJE"]), Math.round(totales?.["COMBUSTIBLE CONSUMIDO"]) );
+
+    $("#loading_kpis").fadeOut()
+    $("#root_kpis").removeClass('visually-hidden')
+
+    const meta_rendimiento = 20;
+    const porcentaje_meta = Math.min(
+      (promedios?.["RENDIMIENTO DE UNIDAD"].toFixed(2) / meta_rendimiento) * 100,
+      100
+    );
+
+     const progressBar = document.getElementById("progress-rendimiento");
+    progressBar.style.width = `${porcentaje_meta.toFixed(0)}%`;
+    progressBar.textContent = `${porcentaje_meta.toFixed(0)}%`;
+
+    // Color dinámico según cumplimiento
+    if (porcentaje_meta < 60)
+      progressBar.className = "progress-bar bg-danger";
+    else if (porcentaje_meta < 90)
+      progressBar.className = "progress-bar bg-warning";
+    else progressBar.className = "progress-bar bg-success";
+
+  // return { totales, promedios };
 }

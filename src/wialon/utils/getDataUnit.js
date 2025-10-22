@@ -8,6 +8,8 @@ import { getGroupSummary } from "../../components/main/kpis/Kpis_groups.js";
 import { convertTimestamp, getToFromByDays, calcularTiempoTotalByArrayTimestamp } from "../../utils/timestamp.js";
 import { eliminarRepetidosConsecutivos, agruparPorHora, agruparPorDia, calificarRendimiento } from "./getPerformanceFuel.js";
 
+export let array_units_props = [];
+
 export const createObjetUnit = async (_unit) => {
   return {
         name: _unit.getName(),
@@ -149,7 +151,8 @@ const updateUnitCard = (id, data) => {
   }
   
   export const updateUnitCard2 = ( id, data ) => {
-    console.log(data);
+    // console.log(data);
+    array_units_props.push( data )
     
     const card = $(`#card-${id}`);
     if (!card.length) return;
@@ -162,4 +165,14 @@ const updateUnitCard = (id, data) => {
     card.find('#cont-porcent').text( `${calificarRendimiento( data?.["RENDIMIENTO DE UNIDAD"].slice(0, 2) ?? 0 )}%` );
 
     card.find('.spinner-border').remove();
-}
+  }
+
+  export const kpis_grupal = () => {
+    // console.log(array_units_props);
+    return array_units_props
+    
+  }
+
+  export const clear_kpis = () =>{
+    array_units_props = []
+  }

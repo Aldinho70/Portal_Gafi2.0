@@ -2,7 +2,7 @@ import { clearHTML } from '../../utils/utils.js';
 import { createLoader } from '../UI/Loader/Loader.js';
 import { createTimedata } from '../UI/Timedata/Timedata.js';
 import { createModalNotification } from './Notifications.js';
-import { createKpisGroup, initCharts } from './kpis/Kpis_groups.js';
+import { createKpisGroup } from './kpis/Kpis_groups.js';
 
 $(document).ready(function () {
   $('#mainContent').html(`
@@ -36,7 +36,6 @@ $(document).ready(function () {
   $("#loading").fadeIn();
   $("#root_kpis").addClass('visually-hidden');
 
-  initCharts();
 });
 
 export const htmlCreateCard = (data) => {

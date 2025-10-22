@@ -4,18 +4,13 @@ import { getFechaActual } from "./src/utils/timestamp.js";
 import MessagesService from "./src/wialon/utils/getMessages.js";
 import { getGroups } from "./src/components/main/Groups/Groups.js";
 import { parseReportTables, ejecutarReporte } from "./src/wialon/utils/getReports.js";
-import { getGroupSummary } from "./src/components/main/kpis/Kpis_groups.js";
+import { getGroupSummary, calcularTotalesYPromedios } from "./src/components/main/kpis/Kpis_groups.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
-import {
-  viewMap3D,
-  quitMap3D,
-} from "./src/components/main/GoogleMaps/GoogleMaps.js";
-import {
-  createObjetUnit,
-  loadUnitsDataInBatches,
-} from "./src/wialon/utils/getDataUnit.js";
+import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
+import { createObjetUnit, loadUnitsDataInBatches } from "./src/wialon/utils/getDataUnit.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
+import { kpis_grupal, clear_kpis } from "./src/wialon/utils/getDataUnit.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
@@ -46,6 +41,7 @@ export async function iniciarWialon() {
       "#root-card-groups",
       "#root-list-card"
     );
+    clear_kpis()
 
     //Ponemos la fecha actual
     $("#root-fecha").html(`Ultima actualizacion: ${getFechaActual()}`);
@@ -57,7 +53,7 @@ export async function iniciarWialon() {
     const resources = session.getItems("avl_resource");
     const all_units = session.getItems("avl_unit");
     
-    // ejecutarReporte( resources, "COMBUSTIBLE POR GRUPO GAFI", "GAFI ABA OPE CHI", weekAgo, now );
+    // ejecutarReporte( resources, "COMBUSTIBLE POR GRUPO GAFI", "GAFI ABA OPE CHI", 7 );
     // console.log( await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7 ));
 
     resources.forEach((resource) => {
@@ -81,7 +77,13 @@ export async function iniciarWialon() {
       _units.push(await createObjetUnit(_unit));
       await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", _unit.getName(), 7 );
     }
+    setTimeout(() => {
+      calcularTotalesYPromedios(kpis_grupal())
+      
+    }, 20000);
+    // kpis_grupal();
     // console.log(_units);
+    
     
     $(`#root_card_${_group_select.replaceAll(" ", "_")}`).addClass(
       "bg-warning"
@@ -105,6 +107,8 @@ export async function iniciarWialon() {
       }
     }
     $("#loading").fadeOut();
+    
+
     // console.log( await getGroupSummary( _units ) );
   } catch (error) {
     console.error("Error al iniciar Wialon:", error);
