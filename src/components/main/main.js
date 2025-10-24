@@ -20,7 +20,7 @@ $(document).ready(function () {
         ${ createKpisGroup() }
 
         
-        <hr class="border border-primary border-3 opacity-75"/>
+        <hr class="border border-dark border-3 opacity-75"/>
 
         <!-- TODAS LAS UNIDADES -->
         <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card">

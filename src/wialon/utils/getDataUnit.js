@@ -150,29 +150,26 @@ const updateUnitCard = (id, data) => {
     card.find('.spinner-border').remove();
   }
   
-  export const updateUnitCard2 = ( id, data ) => {
-    // console.log(data);
-    array_units_props.push( data )
-    
-    const card = $(`#card-${id}`);
-    if (!card.length) return;
-    
-    card.find('.km').text(`${data?.["KILOMETRAJE"] ?? 0}`);
-    card.find('.combustible').text(`${data?.["COMBUSTIBLE CONSUMIDO"] ?? 0}`);
-    card.find('.rendimiento').text(`${data?.["RENDIMIENTO DE UNIDAD"] ?? 0}`);
-    card.find('.excesos').text( data?.["Velocidad máxima en viajes"] ?? 0 );
-    card.find('.ralenti').text( data?.["Horas de motor en ralentí"] ?? 0 );
-    card.find('#cont-porcent').text( `${calificarRendimiento( data?.["RENDIMIENTO DE UNIDAD"].slice(0, 2) ?? 0 )}%` );
+export const updateUnitCard2 = ( id, data ) => {
+  const card = $(`#card-${id}`);
+  if (!card.length) return;
+  
+  card.find('.km').text(`${data?.["KILOMETRAJE"] ?? 0}`);
+  card.find('.combustible').text(`${data?.["COMBUSTIBLE CONSUMIDO"] ?? 0}`);
+  card.find('.rendimiento').text(`${data?.["RENDIMIENTO DE UNIDAD"] ?? 0}`);
+  card.find('.excesos').text( data?.["Velocidad máxima en viajes"] ?? 0 );
+  card.find('.ralenti').text( data?.["Horas de motor en ralentí"] ?? 0 );
+  card.find('#cont-porcent').text( `${calificarRendimiento( data?.["RENDIMIENTO DE UNIDAD"].slice(0, 2) ?? 0 )}%` );
 
-    card.find('.spinner-border').remove();
-  }
+  card.find('.spinner-border').remove();
+}
 
-  export const kpis_grupal = () => {
-    // console.log(array_units_props);
-    return array_units_props
-    
-  }
+export const kpis_grupal = () => {
+  // console.log(array_units_props);
+  return array_units_props
+  
+}
 
-  export const clear_kpis = () =>{
-    array_units_props = []
-  }
+export const clear_kpis = () =>{
+  array_units_props = []
+}

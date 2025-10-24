@@ -3,7 +3,7 @@ import wialonSDK from "./src/wialon/sdk/wialonSDK.js";
 import { getFechaActual } from "./src/utils/timestamp.js";
 import MessagesService from "./src/wialon/utils/getMessages.js";
 import { getGroups } from "./src/components/main/Groups/Groups.js";
-import { parseReportTables, ejecutarReporte } from "./src/wialon/utils/getReports.js";
+import { parseReportTables, ejecutarReporte, ejecutarReporteGrupal } from "./src/wialon/utils/getReports.js";
 import { getGroupSummary, calcularTotalesYPromedios } from "./src/components/main/kpis/Kpis_groups.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
@@ -53,8 +53,12 @@ export async function iniciarWialon() {
     const resources = session.getItems("avl_resource");
     const all_units = session.getItems("avl_unit");
     
-    // ejecutarReporte( resources, "COMBUSTIBLE POR GRUPO GAFI", "GAFI ABA OPE CHI", 7 );
-    // console.log( await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7 ));
+    if( _group_select != "all_units" ){
+      ejecutarReporteGrupal( resources, "Z COMBUSTIBLE POR GRUPO GAFI", _group_select, 7 );
+      $( "#root-card-kpis" ).removeClass('visually-hidden')
+    }else{
+      $( "#root-card-kpis" ).addClass('visually-hidden')
+    }
 
     resources.forEach((resource) => {
       resource.addListener("messageRegistered", htmlCreateNotification);
@@ -70,29 +74,16 @@ export async function iniciarWialon() {
         : all_units;
 
     for (const _unit of data_units) {
-      // const unidad = crearObjetoUnidad(_unit);
-      // const unidad = await createObjetUnit(_unit);
-      // clasificarUnidad(unidad, _unit);
-      // _units.push(unidad);
       _units.push(await createObjetUnit(_unit));
       await ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", _unit.getName(), 7 );
     }
-    setTimeout(() => {
-      calcularTotalesYPromedios(kpis_grupal())
-      
-    }, 20000);
-    // kpis_grupal();
-    // console.log(_units);
-    
-    
+
     $(`#root_card_${_group_select.replaceAll(" ", "_")}`).addClass(
       "bg-warning"
     );
     
-    // ejecutarReporte( resources, "COMBUSTIBLE DIARIO UNIDAD GAFI", "GAFI 252", 7, session );
     htmlCreateCard(_units);
     // getGroupSummary( _units );
-
     // loadUnitsDataInBatches(_units, 10);
 
     if (sessionStorage.getItem("card_actived")) {
