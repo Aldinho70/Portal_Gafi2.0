@@ -1,4 +1,4 @@
-import { updateUnitCard2 } from "./getDataUnit.js";
+import { updateUnitCard } from "./getDataUnit.js";
 import { updateKpis } from "../../components/main/kpis/Kpis_groups.js";
 
 export const ejecutarReporte = async (resources, reportName, objectName, days) => {
@@ -37,7 +37,7 @@ export const ejecutarReporte = async (resources, reportName, objectName, days) =
         // console.error(`${target.getName()} Error:`, wialon.core.Errors.getErrorText(code));
         return
       }else{
-        updateUnitCard2( target.getId(), arrayToObject(data.getStatistics()) )
+        updateUnitCard( target.getId(), arrayToObject(data.getStatistics()) )
       }
       
     }
@@ -97,35 +97,6 @@ export const ejecutarReporteGrupal = async (resources, reportName, objectName, d
     }
   );
 };
-
-export const parseReportTables = (result) => {
-  const tables = result.getTables();
-  const parsed = {};
-
-  tables.forEach(table => {
-    const tableName = table.name;
-    const tableLabel = table.label;
-
-    // Extraer encabezados y totales
-    const headers = table.header;
-    const totals = table.total;
-
-    // Convertir el total a objeto clave-valor
-    const totalObj = {};
-    headers.forEach((header, index) => {
-      totalObj[header] = totals[index];
-    });
-
-    // Construir el objeto final
-    parsed[tableName] = {
-      label: tableLabel,
-      headers: headers,
-      total: totalObj
-    };
-  });
-
-  return parsed;
-}
 
 const arrayToObject = (data) => {
   if (!Array.isArray(data)) return {};

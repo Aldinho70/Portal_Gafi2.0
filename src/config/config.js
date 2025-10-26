@@ -1,7 +1,7 @@
-const USUARIO = 'DEV-PAREDON-NORIAS';
-const CONTRASEÑA = 'Norias-2025';
-const TOKEN = '733a7307cd0dd55c139f57fcaa9269d33033EF2588751D51ECB53AA291A5B6501EF5426B';
-const ROOT = window.location.origin;
+export const USUARIO = 'DEV-PAREDON-NORIAS';
+export const CONTRASEÑA = 'Norias-2025';
+export const TOKEN = '733a7307cd0dd55c139f57fcaa9269d33033EF2588751D51ECB53AA291A5B6501EF5426B';
+export const ROOT = window.location.origin;
 
 export const client_data = {
     name: 'Gafi',
