@@ -90,6 +90,7 @@ export const ejecutarReporteGrupal = async (resources, reportName, objectName, d
         // console.log("✅ Reporte ejecutado:", tables);
         tables.forEach( (table) => {
           if( table.label == 'Horas de Motor' ){
+            console.log( arrayToTable( table.header, table.total ) );
             updateKpis(arrayToTable( table.header, table.total ))
           }
         });

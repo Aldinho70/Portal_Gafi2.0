@@ -1,3 +1,4 @@
+import { initCharFuel } from "../../UI/Highchart/Highchart.Fuel.js";
 import { initChart_FuelVSKm } from "../../UI/Highchart/Highchart.FuelVSKm.js";
 import { initChart_Performance } from "../../UI/Highchart/Highchart.performance.js";
 
@@ -19,6 +20,13 @@ export const createKpisGroup = () => {
                             <h4 class="fw-bold text-dark mb-0">
                                 <i class="bi bi-graph-up-arrow me-2"></i> Indicadores de desempeño
                             </h4>
+                            <div>
+                                <input type="radio" class="btn-check" name="options-base" id="option5" autocomplete="off" checked>
+                                <label class="btn" for="option5">Los ultimos 7 dias</label>
+
+                                <input type="radio" class="btn-check" name="options-base" id="option6" autocomplete="off">
+                                <label class="btn" for="option6">El ultimo mes</label>
+                            </div>
                             <small class="text-muted fst-italic">Resumen de los ultimos 7 dias.</small>
                         </div>
 
@@ -68,7 +76,7 @@ export const createKpisGroup = () => {
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Rendimiento Promedio</h6>
-                                        <div id="chart-rendimiento" style="height:200px;"></div>
+                                        <div id="chart-rendimiento" style="height:100%;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +85,7 @@ export const createKpisGroup = () => {
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <!-- <h6 class="fw-bold text-muted text-uppercase mb-2">Consumo Total de Combustible</h6>-->
-                                        <div id="chart-combustible" style="height:200px;"></div>
+                                        <div id="chart-combustible" style="height:100%;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +106,7 @@ export const createKpisGroup = () => {
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en movimiento</h6>
                                         <h2 class="fw-bold text-success mb-0" id="kpi-consumo-tiempo_movimiento">0</h2>
                                         
-                                        <!--<div id="chart-excesos" style="height:200px;"></div>-->
+                                        <div id="root-fuel" style="height:200px;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -160,9 +168,13 @@ export const updateKpis = ( data ) => {
   document.getElementById("kpi-consumo-tiempo_movimiento").textContent = data?.["En movimiento"] ?? 'No data 👾';
 
     initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
+    initCharFuel( 
+        Math.round( parseFloat( data?.["Consumido en ralentí"].toString().replace(',', '.') ) ),
+        Math.round( parseFloat( data?.["Consumido en movimiento"].toString().replace(',', '.') ) ) 
+    );
     initChart_FuelVSKm( 
-      Math.round( parseFloat( data?.["Kilometraje"].toString().replace(',', '.') ) ), 
-      Math.round( parseFloat( data?.["Combustible consumido"].toString().replace(',', '.') ) ) 
+        Math.round( parseFloat( data?.["Kilometraje"].toString().replace(',', '.') ) ), 
+        Math.round( parseFloat( data?.["Combustible consumido"].toString().replace(',', '.') ) ) 
     );
 
     $("#loading_kpis").fadeOut()
