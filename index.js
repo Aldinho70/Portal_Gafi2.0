@@ -90,7 +90,6 @@ export async function iniciarWialon() {
 }
 
 const getInfocard = (name, owner = "", total = 0, group_select) => {
-  console.log(group_select);
   sessionStorage.setItem("group_select", group_select);
   if (group_select) {
     $("#loading").fadeIn();

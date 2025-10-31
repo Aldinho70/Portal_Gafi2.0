@@ -15,9 +15,17 @@ export const createKpisGroup = () => {
                 </div>
             </center>
 
-            <div id="root-reloader-kpis" class="visually-hidden">
-                <button class="btn btn-primary" type="button" onclick="execReport(7)">Recargar</button>
+            <div id="root-reloader-kpis" class="visually-hidden d-flex flex-column justify-content-center align-items-center text-center p-5" style="min-height: 300px;">
+                <h4 class="text-danger fw-bold mb-3">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Ocurrió un error al cargar la información
+                </h4>
+                <p class="text-muted mb-4">Intenta nuevamente.</p>
+                <button class="btn btn-primary px-4" type="button" onclick="execReport(7)">
+                    <i class="bi bi-arrow-repeat me-2"></i>Recargar
+                </button>
             </div>
+
 
             <div class="col-12" id="root_kpis">
                 <div class="card shadow-sm border-0 rounded-4 bg-white">
@@ -121,13 +129,11 @@ export const createKpisGroup = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div> <!-- /FILA 2 -->
-
-                    </div> <!-- /card-body -->
-                </div> <!-- /card -->
-            </div> <!-- /col-12 -->
-
-        </div> <!-- /row -->
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div> 
     `;
 };
 
