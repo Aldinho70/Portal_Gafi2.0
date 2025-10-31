@@ -93,16 +93,16 @@ export const createKpisGroup = () => {
 
                         <!-- FILA 2: GRÁFICAS -->
                         <div class="row g-4">
-                            <div class="col-md-4">
+                            <!--<div class="col-md-4">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Rendimiento Promedio</h6>
                                         <div id="chart-rendimiento" style="height:100%;"></div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
 
-                            <div class="col-md-4">
+                            <div class="col-md-8">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <div id="chart-combustible" style="height:100%;"></div>
@@ -138,6 +138,8 @@ export const createKpisGroup = () => {
 };
 
 export const updateKpis = ( group, data ) => {
+    console.log( data );
+    
     document.getElementById("root_group_kpis").textContent = group;
     
     document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
@@ -156,7 +158,7 @@ export const updateKpis = ( group, data ) => {
 
     document.getElementById("kpi-consumo-tiempo_movimiento").textContent = data?.["En movimiento"] ?? 'No data 👾';
 
-    initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
+    // initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
     initCharFuel( 
         Math.round( parseFloat( data?.["Consumido en ralentí"].toString().replace(',', '.') ) ),
         Math.round( parseFloat( data?.["Consumido en movimiento"].toString().replace(',', '.') ) ) 
