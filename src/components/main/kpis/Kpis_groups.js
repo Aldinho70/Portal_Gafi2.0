@@ -1,4 +1,5 @@
 import { initCharFuel } from "../../UI/Highchart/Highchart.Fuel.js";
+import { ejecutarReporteGrupal } from "../../../wialon/utils/getReports.js";
 import { initChart_FuelVSKm } from "../../UI/Highchart/Highchart.FuelVSKm.js";
 import { initChart_Performance } from "../../UI/Highchart/Highchart.performance.js";
 
@@ -6,28 +7,37 @@ export const createKpisGroup = () => {
   return `
         <!-- SECCIÓN KPI DASHBOARD -->
         <div class="row" id="root-card-kpis">
+
             <center>
-              <div id="loading_kpis" class="p-5">
-                <img src="./src/assets/img/logojd.png" alt="Cargando..." /><br>
-                <h1 class="text-dark">Cargando informacion...</h1>
-              </div>
+                <div id="loading_kpis" class="p-5">
+                    <img src="./src/assets/img/logojd.png" alt="Cargando..." /><br>
+                    <h1 class="text-dark">Cargando informacion...</h1>
+                </div>
             </center>
+
+            <div id="root-reloader-kpis" class="visually-hidden">
+                <button class="btn btn-primary" type="button" onclick="execReport(7)">Recargar</button>
+            </div>
 
             <div class="col-12" id="root_kpis">
                 <div class="card shadow-sm border-0 rounded-4 bg-white">
                     <div class="card-body">
+
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="fw-bold text-dark mb-0">
-                                <i class="bi bi-graph-up-arrow me-2"></i> Indicadores de desempeño
+                                <i class="bi bi-graph-up-arrow me-2"></i>
+                                Indicadores de desempeño <span id="root_group_kpis"></span>
                             </h4>
-                            <div>
-                                <input type="radio" class="btn-check" name="options-base" id="option5" autocomplete="off" checked>
-                                <label class="btn" for="option5">Los ultimos 7 dias</label>
 
-                                <input type="radio" class="btn-check" name="options-base" id="option6" autocomplete="off">
-                                <label class="btn" for="option6">El ultimo mes</label>
+                            <div class="btn-group" role="group" aria-label="Rango de fechas">
+                                <input type="radio" class="btn-check" name="range" id="week" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="week" onclick="execReport(7)">Últimos 7 días</label>
+
+                                <input type="radio" class="btn-check" name="range" id="month" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="month" onclick="execReport(30)">Último mes</label>
                             </div>
-                            <small class="text-muted fst-italic">Resumen de los ultimos 7 dias.</small>
+
+                            <small class="text-muted fst-italic">Resumen de los últimos 7 días.</small>
                         </div>
 
                         <!-- FILA 1: KPIs numéricos -->
@@ -41,6 +51,7 @@ export const createKpisGroup = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-3">
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
@@ -50,6 +61,7 @@ export const createKpisGroup = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-3">
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
@@ -59,10 +71,11 @@ export const createKpisGroup = () => {
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-md-3">
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
                                     <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase">Maxima velocidad detectada</h6>
+                                        <h6 class="fw-bold text-muted text-uppercase">Máxima velocidad detectada</h6>
                                         <h2 class="fw-bold text-danger mb-0" id="kpi-excesos">0</h2>
                                         <small class="text-muted">Semana actual</small>
                                     </div>
@@ -84,7 +97,6 @@ export const createKpisGroup = () => {
                             <div class="col-md-4">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <!-- <h6 class="fw-bold text-muted text-uppercase mb-2">Consumo Total de Combustible</h6>-->
                                         <div id="chart-combustible" style="height:100%;"></div>
                                     </div>
                                 </div>
@@ -93,79 +105,50 @@ export const createKpisGroup = () => {
                             <div class="col-md-4">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Litros consumidos en ralenti</h6>
                                         <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-ralenti">0</h2>
-                                        
+
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en ralenti</h6>
                                         <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-tiempo_ralenti">0</h2>
 
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Litros consumidos en movimiento</h6>
                                         <h2 class="fw-bold text-success mb-0" id="kpi-consumo-movimiento">0</h2>
-                                        
+
                                         <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en movimiento</h6>
                                         <h2 class="fw-bold text-success mb-0" id="kpi-consumo-tiempo_movimiento">0</h2>
-                                        
+
                                         <div id="root-fuel" style="height:200px;"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> <!-- /FILA 2 -->
 
-                        <!-- FILA 3: Porcentajes y progreso -->
-                        <!-- <div class="row g-3 mt-4">
-                            <div class="col-md-6">
-                                <div class="card border-0 shadow-sm bg-light rounded-3">
-                                    <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase mb-3">Cumplimiento de meta de rendimiento</h6>
-                                        <div class="progress" style="height: 20px;">
-                                            <div class="progress-bar bg-success" id="progress-rendimiento" style="width: 75%;">75%</div>
-                                        </div>
-                                        <small class="text-muted">Objetivo: mejorar al menos un 10% mensual</small>
-                                    </div>
-                                </div>
-                            </div>
+                    </div> <!-- /card-body -->
+                </div> <!-- /card -->
+            </div> <!-- /col-12 -->
 
-                            <div class="col-md-6">
-                                <div class="card border-0 shadow-sm bg-light rounded-3">
-                                    <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase mb-3">Tendencia general de consumo</h6>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-arrow-up-right-circle-fill text-success fs-3 me-3"></i>
-                                            <div>
-                                                <h5 class="fw-bold mb-0 text-success">+4.8%</h5>
-                                                <small class="text-muted">vs semana anterior</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        -->
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div> <!-- /row -->
     `;
 };
 
-export const updateKpis = ( data ) => {
-  document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
+export const updateKpis = ( group, data ) => {
+    document.getElementById("root_group_kpis").textContent = group;
+    
+    document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
 
-  document.getElementById("kpi-consumo").textContent = data?.["Combustible consumido"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo").textContent = data?.["Combustible consumido"] ?? 'No data 👾';
 
-  document.getElementById("kpi-velocidad").textContent = data?.["Velocidad Promedio"] ?? 'No data 👾';
+    document.getElementById("kpi-velocidad").textContent = data?.["Velocidad Promedio"] ?? 'No data 👾';
 
-  document.getElementById("kpi-excesos").textContent = data?.["Velocidad máxima"] ?? 'No data 👾';
+    document.getElementById("kpi-excesos").textContent = data?.["Velocidad máxima"] ?? 'No data 👾';
 
-  document.getElementById("kpi-consumo-ralenti").textContent = data?.["Consumido en ralentí"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo-ralenti").textContent = data?.["Consumido en ralentí"] ?? 'No data 👾';
 
-  document.getElementById("kpi-consumo-tiempo_ralenti").textContent = data?.["Ralentí"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo-tiempo_ralenti").textContent = data?.["Ralentí"] ?? 'No data 👾';
 
-  document.getElementById("kpi-consumo-movimiento").textContent = data?.["Consumido en movimiento"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo-movimiento").textContent = data?.["Consumido en movimiento"] ?? 'No data 👾';
 
-  document.getElementById("kpi-consumo-tiempo_movimiento").textContent = data?.["En movimiento"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo-tiempo_movimiento").textContent = data?.["En movimiento"] ?? 'No data 👾';
 
     initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
     initCharFuel( 
@@ -178,6 +161,7 @@ export const updateKpis = ( data ) => {
     );
 
     $("#loading_kpis").fadeOut()
+    $("#root-reloader_kpis").addClass('visually-hidden')
     $("#root_kpis").removeClass('visually-hidden')
 
     // const meta_rendimiento = 20;
@@ -198,4 +182,17 @@ export const updateKpis = ( data ) => {
     // else progressBar.className = "progress-bar bg-success";
 
   // return { totales, promedios };
+}
+
+export const getReloader = () =>{
+    $("#loading_kpis").fadeOut();
+    $("#root-reloader-kpis").removeClass('visually-hidden');
+    $("#root_kpis").addClass('visually-hidden');
+}
+
+export const execReport = ( days ) => {
+    $("#loading_kpis").fadeIn();
+    $("#root_kpis").addClass('visually-hidden');
+    $("#root-reloader-kpis").addClass('visually-hidden');
+    ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", sessionStorage.getItem("group_select"), days );
 }

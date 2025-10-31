@@ -4,6 +4,7 @@ import wialonSDK from "./src/wialon/sdk/wialonSDK.js";
 import { getFechaActual } from "./src/utils/timestamp.js";
 import { getGroups } from "./src/components/main/Groups/Groups.js";
 import { createObjetUnit } from "./src/wialon/utils/getDataUnit.js";
+import { execReport } from "./src/components/main/kpis/Kpis_groups.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
@@ -13,11 +14,12 @@ import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
 window.quitMap3D = quitMap3D;
+window.execReport = execReport;
 
 let session;
 let _groups;
 let data_units = [];
-let _group_select = "all_units";
+export let _group_select = "all_units";
 
 export async function iniciarWialon() {
   try {
@@ -39,7 +41,7 @@ export async function iniciarWialon() {
     const all_units = session.getItems("avl_unit");
     
     if( _group_select != "all_units" ){
-      ejecutarReporteGrupal( resources, "Z COMBUSTIBLE POR GRUPO GAFI", _group_select, 7 );
+      ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", _group_select, 7 );
       $( "#root-card-kpis" ).removeClass('visually-hidden')
     }else{
       $( "#root-card-kpis" ).addClass('visually-hidden')
@@ -88,6 +90,8 @@ export async function iniciarWialon() {
 }
 
 const getInfocard = (name, owner = "", total = 0, group_select) => {
+  console.log(group_select);
+  sessionStorage.setItem("group_select", group_select);
   if (group_select) {
     $("#loading").fadeIn();
     $("#loading_kpis").fadeIn();

@@ -1,5 +1,5 @@
 import { updateUnitCard } from "./getDataUnit.js";
-import { updateKpis } from "../../components/main/kpis/Kpis_groups.js";
+import { updateKpis, getReloader } from "../../components/main/kpis/Kpis_groups.js";
 
 export const ejecutarReporte = async (resources, reportName, objectName, days) => {
   const now = Math.floor(Date.now() / 1000);
@@ -44,28 +44,31 @@ export const ejecutarReporte = async (resources, reportName, objectName, days) =
   );
 };
 
-export const ejecutarReporteGrupal = async (resources, reportName, objectName, days) => {
+export const ejecutarReporteGrupal = async ( reportName, objectName, days ) => {
   const now = Math.floor(Date.now() / 1000);
   const weekAgo = now - days * 24 * 60 * 60;
   const session = wialon.core.Session.getInstance();
+  const resources = session.getItems("avl_resource");
 
   const resource = resources.find(r => r.getName() === "CUENTA_DEMO");
   if (!resource) {
-    console.error("Recurso no encontrado");
+    // console.error("Recurso no encontrado");
     return;
   }
 
   const report = Object.values(resource.getReports()).find(r => r.n === reportName);
   if (!report) {
     console.error("Reporte no encontrado");
-    return;
+    getReloader();
+    // return;
   }
 
   let target = session.getItems("avl_unit_group").find(g => g.getName() === objectName) || session.getItems("avl_unit").find(u => u.getName() === objectName);
 
   if (!target) {
     console.error("Grupo o unidad no encontrado");
-    return;
+    getReloader();
+    // return;
   }
 
   const interval = {
@@ -91,7 +94,7 @@ export const ejecutarReporteGrupal = async (resources, reportName, objectName, d
         tables.forEach( (table) => {
           if( table.label == 'Horas de Motor' ){
             console.log( arrayToTable( table.header, table.total ) );
-            updateKpis(arrayToTable( table.header, table.total ))
+            updateKpis( objectName, arrayToTable( table.header, table.total ) )
           }
         });
       }
