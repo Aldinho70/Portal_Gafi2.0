@@ -8,7 +8,7 @@ import { execReport } from "./src/components/main/kpis/Kpis_groups.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
-import { ejecutarReporte, ejecutarReporteGrupal } from "./src/wialon/utils/getReports.js";
+import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
@@ -41,7 +41,10 @@ export async function iniciarWialon() {
     const all_units = session.getItems("avl_unit");
     
     if( _group_select != "all_units" ){
-      ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", _group_select, 7 );
+      ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
+
+      // ejecutarReporteGrupal2( "Z COMBUSTIBLE POR GRUPO GAFI", "Llenados de Combustible", _group_select, 7 );
+
       $( "#root-card-kpis" ).removeClass('visually-hidden')
     }else{
       $( "#root-card-kpis" ).addClass('visually-hidden')

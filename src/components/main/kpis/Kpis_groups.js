@@ -150,7 +150,7 @@ export const updateKpis = ( group, data ) => {
 
     document.getElementById("kpi-excesos").textContent = data?.["Velocidad máxima"] ?? 'No data 👾';
 
-    document.getElementById("kpi-consumo-ralenti").textContent = data?.["Consumido en ralentí"] ?? 'No data 👾';
+    document.getElementById("kpi-consumo-ralenti").textContent = data?.["Consumido por FLS en ralentí"] ?? 'No data 👾';
 
     document.getElementById("kpi-consumo-tiempo_ralenti").textContent = data?.["Ralentí"] ?? 'No data 👾';
 
@@ -160,7 +160,7 @@ export const updateKpis = ( group, data ) => {
 
     // initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
     initCharFuel( 
-        Math.round( parseFloat( data?.["Consumido en ralentí"].toString().replace(',', '.') ) ),
+        Math.round( parseFloat( data?.["Consumido por FLS en ralentí"].toString().replace(',', '.') ) ),
         Math.round( parseFloat( data?.["Consumido en movimiento"].toString().replace(',', '.') ) ) 
     );
     initChart_FuelVSKm( 
@@ -202,5 +202,5 @@ export const execReport = ( days ) => {
     $("#loading_kpis").fadeIn();
     $("#root_kpis").addClass('visually-hidden');
     $("#root-reloader-kpis").addClass('visually-hidden');
-    ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", sessionStorage.getItem("group_select"), days );
+    ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days );
 }
