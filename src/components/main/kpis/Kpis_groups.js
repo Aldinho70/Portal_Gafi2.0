@@ -4,7 +4,7 @@ import { initChart_FuelVSKm } from "../../UI/Highchart/Highchart.FuelVSKm.js";
 import { initChart_Performance } from "../../UI/Highchart/Highchart.performance.js";
 
 export const createKpisGroup = () => {
-  return `
+    return `
         <!-- SECCIÓN KPI DASHBOARD -->
         <div class="row" id="root-card-kpis">
 
@@ -102,7 +102,7 @@ export const createKpisGroup = () => {
                                 </div>
                             </div>-->
 
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <div id="chart-combustible" style="height:100%;"></div>
@@ -110,22 +110,44 @@ export const createKpisGroup = () => {
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Litros consumidos en ralenti</h6>
-                                        <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-ralenti">0</h2>
+                                        <h5 class="fw-bold text-secondary text-uppercase mb-3">Consumo y Tiempo</h5>
 
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en ralenti</h6>
-                                        <h2 class="fw-bold text-danger mb-0" id="kpi-consumo-tiempo_ralenti">0</h2>
+                                        <div class="row g-3 mb-3">
+                                            <!-- KPI 1 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Litros Ralenti</h6>
+                                                    <h3 class="fw-bold text-danger mb-0" id="kpi-consumo-ralenti">0</h3>
+                                                </div>
+                                            </div>
+                                            <!-- KPI 2 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Horas Ralenti</h6>
+                                                    <h3 class="fw-bold text-danger mb-0" id="kpi-consumo-tiempo_ralenti">0</h3>
+                                                </div>
+                                            </div>
+                                            <!-- KPI 3 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Litros Movimiento</h6>
+                                                    <h3 class="fw-bold text-success mb-0" id="kpi-consumo-movimiento">0</h3>
+                                                </div>
+                                            </div>
+                                            <!-- KPI 4 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Horas Movimiento</h6>
+                                                    <h3 class="fw-bold text-success mb-0" id="kpi-consumo-tiempo_movimiento">0</h3>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Litros consumidos en movimiento</h6>
-                                        <h2 class="fw-bold text-success mb-0" id="kpi-consumo-movimiento">0</h2>
-
-                                        <h6 class="fw-bold text-muted text-uppercase mb-2">Horas en movimiento</h6>
-                                        <h2 class="fw-bold text-success mb-0" id="kpi-consumo-tiempo_movimiento">0</h2>
-
-                                        <div id="root-fuel" style="height:200px;"></div>
+                                        <!-- Gráfica -->
+                                        <div id="root-fuel" class="mt-3" style="height:220px;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -137,11 +159,9 @@ export const createKpisGroup = () => {
     `;
 };
 
-export const updateKpis = ( group, data ) => {
-    console.log( data );
-    
+export const updateKpis = (group, data) => {
     document.getElementById("root_group_kpis").textContent = group;
-    
+
     document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
 
     document.getElementById("kpi-consumo").textContent = data?.["Combustible consumido"] ?? 'No data 👾';
@@ -159,13 +179,13 @@ export const updateKpis = ( group, data ) => {
     document.getElementById("kpi-consumo-tiempo_movimiento").textContent = data?.["En movimiento"] ?? 'No data 👾';
 
     // initChart_Performance( parseFloat( data?.["Rendimiento"].toString().replace(',', '.') ) );
-    initCharFuel( 
-        Math.round( parseFloat( data?.["Consumido por FLS en ralentí"].toString().replace(',', '.') ) ),
-        Math.round( parseFloat( data?.["Consumido en movimiento"].toString().replace(',', '.') ) ) 
+    initCharFuel(
+        Math.round(parseFloat(data?.["Consumido por FLS en ralentí"].toString().replace(',', '.'))),
+        Math.round(parseFloat(data?.["Consumido en movimiento"].toString().replace(',', '.')))
     );
-    initChart_FuelVSKm( 
-        Math.round( parseFloat( data?.["Kilometraje"].toString().replace(',', '.') ) ), 
-        Math.round( parseFloat( data?.["Combustible consumido"].toString().replace(',', '.') ) ) 
+    initChart_FuelVSKm(
+        Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
+        Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
     );
 
     $("#loading_kpis").fadeOut()
@@ -189,18 +209,18 @@ export const updateKpis = ( group, data ) => {
     //   progressBar.className = "progress-bar bg-warning";
     // else progressBar.className = "progress-bar bg-success";
 
-  // return { totales, promedios };
+    // return { totales, promedios };
 }
 
-export const getReloader = () =>{
+export const getReloader = () => {
     $("#loading_kpis").fadeOut();
     $("#root-reloader-kpis").removeClass('visually-hidden');
     $("#root_kpis").addClass('visually-hidden');
 }
 
-export const execReport = ( days ) => {
+export const execReport = (days) => {
     $("#loading_kpis").fadeIn();
     $("#root_kpis").addClass('visually-hidden');
     $("#root-reloader-kpis").addClass('visually-hidden');
-    ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days );
+    ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days);
 }

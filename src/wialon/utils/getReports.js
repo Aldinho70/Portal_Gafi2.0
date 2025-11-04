@@ -85,23 +85,10 @@ export const ejecutarReporteGrupal = async (informeName, reportName, objectName,
       interval,
       async (code, data) => {
         if (code || !data.getTables().length) {
-          // return;
-          // console.log( 'MARCO ERROR Y LO VAMOS A VOLVER A LANZAR');
-
-          // ejecutarReporteGrupal(resources, informeName, objectName, 7);
           getReloader();
         } else {
           const tables = data.getTables();
-          // console.log("✅ Reporte ejecutado:", tables);
-          tables.forEach((table) => {
-            if (table.label == reportName) {
-              // console.log( arrayToTable( table.header, table.total ) );
-              updateKpis(objectName, arrayToTable(table.header, table.total))
-            }else{
-              console.log('naru');
-              
-            }
-          });
+          searchSafety( tables, reportName, objectName )
         }
       }
     );
@@ -204,4 +191,24 @@ const arrayToTable = (headers, totals) => {
   // console.log(obj);
   return obj
 
+}
+
+const searchSafety = (tables, reportName, objectName) => {
+  let encontrado = false;
+
+  for (const table of tables) {
+    if (table.label === reportName) {
+      updateKpis(objectName, arrayToTable(table.header, table.total));
+      encontrado = true;
+      break; // detenemos el ciclo
+    }
+  }
+
+  // Si al finalizar no se encontró, volver a pedir datos
+  if (!encontrado) {
+    console.warn("No se encontró el reporte, reintentando...");
+    setTimeout(() => {
+      execReport(7); // o la función que vuelve a solicitar los datos
+    }, 2000); // espera 2 segundos antes de reintentar
+  }
 }

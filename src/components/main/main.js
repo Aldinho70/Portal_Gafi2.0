@@ -6,31 +6,57 @@ import { createKpisGroup } from './kpis/Kpis_groups.js';
 
 $(document).ready(function () {
   $('#mainContent').html(`
-    <div class="container-fluid py-3 px-4">
-      ${ createLoader() }
-      ${ createTimedata() }  
+    <div class=" bg-light min-vh-100">
 
-      <div class="row g-3 mb-4" id="root-card-groups">
+    ${ createLoader() }
+    ${ createTimedata() }
 
+    <!-- ======= KPIs grupales ======= -->
+    <div class="row" id="root-card-groups"></div>
+
+    <!-- ======= Tabs Navigation ======= -->
+    <ul class="nav nav-pills justify-content-center flex-wrap gap-2" id="menuTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-semibold px-4 py-2 shadow-sm" id="kpis-grupal-tab"
+          data-bs-toggle="pill" data-bs-target="#kpis-grupal" type="button"
+          role="tab" aria-controls="kpis-grupal" aria-selected="true">
+          <i class="bi bi-graph-up me-2"></i>KPIs Grupal
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold px-4 py-2 shadow-sm" id="unidades-tab"
+          data-bs-toggle="pill" data-bs-target="#unidades" type="button"
+          role="tab" aria-controls="unidades" aria-selected="false">
+          <i class="bi bi-truck me-2"></i>Todas las Unidades
+        </button>
+      </li>
+    </ul>
+
+    <!-- ======= Separator ======= -->
+    <hr class="border border-dark border-1 opacity-50"/>
+
+    <!-- ======= Main Content ======= -->
+    <div class="tab-content" id="menuTabsContent" style="max-height: 75vh; overflow-y: auto;">
+
+      <!-- Panel: KPIs Grupal -->
+      <div class="tab-pane fade show active" id="kpis-grupal" role="tabpanel" aria-labelledby="kpis-grupal-tab">
+        ${ createKpisGroup() }
       </div>
 
-      <hr class="border border-dark border-3 opacity-75"/>
-
-      <div class="container-fluid px-0" id="root-main-1" style="max-height: 75vh; overflow-y: auto">
-        ${ createKpisGroup() }
-
-        
-        <hr class="border border-dark border-3 opacity-75"/>
-
-        <!-- TODAS LAS UNIDADES -->
-        <div class="row row-cols-1 row-cols-md-3 g-4" id="root-card">
-        
+      <!-- Panel: Unidades -->
+      <div class="tab-pane fade" id="unidades" role="tabpanel" aria-labelledby="unidades-tab">
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+          <div class="row  row-cols-sm-2 row-cols-md-3  g-3" id="root-card">
+          </div>
         </div>
       </div>
     </div>
 
-    ${ createModalNotification() }
-    <div class="modal" tabindex="-1" id="unitDetailModal"></div>
+  </div>
+
+  <!-- ======= Modales ======= -->
+  ${ createModalNotification() }
+  <div class="modal fade" tabindex="-1" id="unitDetailModal"></div>
   `);
 
   $("#loading").fadeIn();
