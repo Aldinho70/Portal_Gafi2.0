@@ -8,8 +8,8 @@ import { execReport } from "./src/components/main/kpis/Kpis_groups.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
-import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
+import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
