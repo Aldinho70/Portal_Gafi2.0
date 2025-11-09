@@ -1,5 +1,3 @@
-import { clearHTML } from "../../../utils/utils.js";
-
 export const getGroups = ( groups ) => {
     let cont = 0
     const _groups = {};
@@ -16,7 +14,11 @@ export const getGroups = ( groups ) => {
         _groups[name] = objt;
 
         htmlCreateGroups(objt)
-        $("#cont-all-units").html( cont += objt.units.length  )
+        
+        if (!['GAFI CEDIS GMZ', 'GAFI CEDIS CHIH'].includes(name)){
+            $("#cont-all-units").html(cont += objt.units.length);
+        }
+
     });
 
     return _groups;

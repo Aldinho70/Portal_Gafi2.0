@@ -183,10 +183,11 @@ export const updateKpis = (group, data) => {
         Math.round(parseFloat(data?.["Consumido por FLS en ralentí"].toString().replace(',', '.'))),
         Math.round(parseFloat(data?.["Consumido en movimiento"].toString().replace(',', '.')))
     );
-    initChart_FuelVSKm(
-        Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
-        Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
-    );
+    
+    // initChart_FuelVSKm(
+    //     Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
+    //     Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
+    // );
 
     $("#loading_kpis").fadeOut()
     $("#root-reloader_kpis").addClass('visually-hidden')
