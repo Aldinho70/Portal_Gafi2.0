@@ -219,9 +219,13 @@ export const getReloader = () => {
     $("#root_kpis").addClass('visually-hidden');
 }
 
-export const execReport = (days) => {
+export const execReport = (days, from, to) => {
     $("#loading_kpis").fadeIn();
     $("#root_kpis").addClass('visually-hidden');
     $("#root-reloader-kpis").addClass('visually-hidden');
-    ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days);
+    if( days == 0 ){
+        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), 0, from, to );
+    }else{
+        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days );
+    }
 }

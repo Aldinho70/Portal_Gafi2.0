@@ -1,85 +1,112 @@
 import { clearHTML } from '../../utils/utils.js';
+import { execReport } from './kpis/Kpis_groups.js';
 import { createLoader } from '../UI/Loader/Loader.js';
+import { createKpisGroup } from './kpis/Kpis_groups.js';
 import { createTimedata } from '../UI/Timedata/Timedata.js';
 import { createModalNotification } from './Notifications.js';
-import { createKpisGroup } from './kpis/Kpis_groups.js';
 
 $(document).ready(function () {
   $('#mainContent').html(`
-    <div class=" bg-light min-vh-100">
+    <div class="bg-light min-vh-100">
 
-    ${ createLoader() }
-    ${ createTimedata() }
+      ${createLoader()}
+      ${createTimedata()}
 
-    <!-- ======= KPIs grupales ======= -->
-    <div class="row" id="root-card-groups"></div>
+      <!-- ======= KPIs grupales ======= -->
+      <div class="row" id="root-card-groups"></div>
 
-    
-    <!-- ======= Tabs Navigation ======= -->
-    <div class="container my-3">
-      <div class="row align-items-center gy-3">
-        
-        <!-- search units -->
-        <div class="col-md-4">
-          <div class="input-group">
-            <span class="input-group-text" id="input-search-units">🔎</span>
-            <input type="text" id="searchUnits" class="form-control" placeholder="Buscar unidades..." aria-label="units" aria-describedby="input-search-units">
+      <!-- ======= Tabs Navigation ======= -->
+      <div class="container my-3">
+        <div class="row align-items-center gy-3">
+
+          <!-- Buscador -->
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text" id="input-search-units">🔎</span>
+              <input type="text" id="searchUnits" class="form-control" placeholder="Buscar unidades..." aria-label="units" aria-describedby="input-search-units">
+            </div>
+          </div>
+
+          <!-- Rango de fechas -->
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+              <input type="text" id="rangoFechas" class="form-control" placeholder="Selecciona un rango de fechas">
+            </div>
+          </div>
+
+          <!-- Menú -->
+          <div class="col-md-4">
+            <ul class="nav nav-pills justify-content-center flex-wrap gap-2" id="menuTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-semibold px-4 py-2 shadow-sm"
+                  id="unidades-tab" data-bs-toggle="pill" data-bs-target="#unidades"
+                  type="button" role="tab" aria-controls="unidades" aria-selected="false">
+                  <i class="bi bi-truck me-2"></i>Todas las Unidades
+                </button>
+              </li>
+
+              <li class="nav-item" role="presentation">
+                <button class="nav-link fw-semibold px-4 py-2 shadow-sm"
+                  id="kpis-grupal-tab" data-bs-toggle="pill" data-bs-target="#kpis-grupal"
+                  type="button" role="tab" aria-controls="kpis-grupal" aria-selected="true">
+                  <i class="bi bi-graph-up me-2"></i>KPIs Grupal
+                </button>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ======= Separator ======= -->
+      <hr class="border border-dark border-1 opacity-50"/>
+
+      <!-- ======= Main Content ======= -->
+      <div class="tab-content" id="menuTabsContent" style="max-height: 75vh; overflow-y: auto;">
+
+        <!-- Panel: KPIs Grupal -->
+        <div class="tab-pane fade" id="kpis-grupal" role="tabpanel" aria-labelledby="kpis-grupal-tab">
+          ${createKpisGroup()}
+        </div>
+
+        <!-- Panel: Unidades -->
+        <div class="tab-pane fade show active" id="unidades" role="tabpanel" aria-labelledby="unidades-tab">
+          <div class="card border-0 shadow-sm rounded-4 bg-white">
+            <div class="row row-cols-sm-2 row-cols-md-3 g-3" id="root-card"></div>
           </div>
         </div>
-
-        <!-- Menú -->
-        <div class="col-md-8">
-          <ul class="nav nav-pills justify-content-center flex-wrap gap-2" id="menuTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active fw-semibold px-4 py-2 shadow-sm"
-                id="unidades-tab" data-bs-toggle="pill" data-bs-target="#unidades"
-                type="button" role="tab" aria-controls="unidades" aria-selected="false">
-                <i class="bi bi-truck me-2"></i>Todas las Unidades
-              </button>
-            </li>
-
-            <li class="nav-item" role="presentation">
-              <button class="nav-link fw-semibold px-4 py-2 shadow-sm"
-                id="kpis-grupal-tab" data-bs-toggle="pill" data-bs-target="#kpis-grupal"
-                type="button" role="tab" aria-controls="kpis-grupal" aria-selected="true">
-                <i class="bi bi-graph-up me-2"></i>KPIs Grupal
-              </button>
-            </li>
-          </ul>
-        </div>
-
       </div>
+
     </div>
 
-    <!-- ======= Separator ======= -->
-    <hr class="border border-dark border-1 opacity-50"/>
-
-    <!-- ======= Main Content ======= -->
-    <div class="tab-content" id="menuTabsContent" style="max-height: 75vh; overflow-y: auto;">
-
-      <!-- Panel: KPIs Grupal -->
-      <div class="tab-pane fade" id="kpis-grupal" role="tabpanel" aria-labelledby="kpis-grupal-tab">
-        ${ createKpisGroup() }
-      </div>
-
-      <!-- Panel: Unidades -->
-      <div class="tab-pane fade show active" id="unidades" role="tabpanel" aria-labelledby="unidades-tab">
-        <div class="card border-0 shadow-sm rounded-4 bg-white">
-          <div class="row  row-cols-sm-2 row-cols-md-3  g-3" id="root-card">
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ======= Modales ======= -->
-  ${ createModalNotification() }
-  <div class="modal fade" tabindex="-1" id="unitDetailModal"></div>
+    <!-- ======= Modales ======= -->
+    ${createModalNotification()}
+    <div class="modal fade" tabindex="-1" id="unitDetailModal"></div>
   `);
 
+  // Mostrar loader
   $("#loading").fadeIn();
   $("#root_kpis").addClass('visually-hidden');
+
+  // Inicializar Flatpickr (después de inyectar el HTML)
+  flatpickr("#rangoFechas", {
+  mode: "range",
+  dateFormat: "Y-m-d",
+  locale: "es",
+    onClose: function(selectedDates) {
+      if (selectedDates.length === 2) {
+        const inicio = selectedDates[0];
+        const fin = selectedDates[1];
+        const diffDias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+
+        console.log(`Rango: ${inicio.toISOString().split('T')[0]} → ${fin.toISOString().split('T')[0]}`);
+        console.log(`Total de días: ${diffDias}`);
+        
+        execReport( 0, inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0] );
+      }
+    }
+  });
 
 });
 

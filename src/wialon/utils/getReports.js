@@ -44,10 +44,17 @@ export const ejecutarReporte = async (resources, reportName, objectName, days) =
   );
 };
 
-export const ejecutarReporteGrupal = async (informeName, reportName, objectName, days) => {
+export const ejecutarReporteGrupal = async (informeName, reportName, objectName, days, _from, _to) => {
   try {
-    const now = Math.floor(Date.now() / 1000);
-    const weekAgo = now - days * 24 * 60 * 60;
+    let now, weekAgo;
+
+    if( _from && _to && days == 0 ){
+      now = Math.floor(new Date(_to).getTime() / 1000);
+      weekAgo = Math.floor(new Date(_from).getTime() / 1000);
+    }else{
+      now = Math.floor(Date.now() / 1000);
+      weekAgo = now - days * 24 * 60 * 60;
+    }
     const session = wialon.core.Session.getInstance();
     const resources = session.getItems("avl_resource");
 
@@ -71,7 +78,7 @@ export const ejecutarReporteGrupal = async (informeName, reportName, objectName,
       getReloader();
       // return;
     }
-
+    
     const interval = {
       from: weekAgo,
       to: now,
