@@ -10,6 +10,7 @@ import { htmlCreateNotification } from "./src/components/main/Notifications.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
 import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
+import { fetchReporte } from "./src/api/reports/getReports.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
@@ -23,6 +24,23 @@ export let _group_select = "all_units";
 
 export async function iniciarWialon() {
   try {
+
+    fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
+    .then(data => {
+      if (data){
+        console.log('Datos de excesos de velocidad');
+        console.log(data);
+      } 
+    });
+
+    fetchReporte('2025-10-01', '2025-11-01', 29566197, 'fuel/getRoundFuel.php')
+    .then(data => {
+      if (data){
+        console.log('Datos de Promedio de combustible');
+        console.log(data);
+      } 
+    });
+
     clearHTML(
       "#root-card",
       "#root-card-info",
