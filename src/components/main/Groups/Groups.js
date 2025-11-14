@@ -8,6 +8,7 @@ export const getGroups = ( groups ) => {
             name: name,
             icon: group.getIconUrl(32),
             units: group.getUnits(),
+            id_group: group.getId()
             // length: Object.keys(groups[0]).length,
         }
 
@@ -49,7 +50,7 @@ const htmlCreateGroups = (data) => {
     }
     
     $("#root-card-groups").append(`
-        <div class="card mb-3 col-auto shadow-sm border-0 btn-groups" onClick="getInfocard('${data.name}', '', ${data.units.length}, '${data.name}')" style="cursor: pointer; min-width: 220px;">
+        <div class="card mb-3 col-auto shadow-sm border-0 btn-groups" onClick="getInfocard('${data.name}', '', ${data.units.length}, '${data.name}', ${data.id_group})" style="cursor: pointer; min-width: 220px;">
             <div class="d-flex align-items-center justify-content-center gap-2 p-2 hover-animate rounded-4" id="root_card_${data.name.replaceAll(' ', '_')}">
                 <!-- Imagen -->
                 <div class="d-flex align-items-center">

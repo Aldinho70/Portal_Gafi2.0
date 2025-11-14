@@ -1,3 +1,4 @@
+import { fetchReporte } from "../../../api/reports/getReports.js";
 import { initCharFuel } from "../../UI/Highchart/Highchart.Fuel.js";
 import { ejecutarReporteGrupal } from "../../../wialon/utils/getReports.js";
 import { initChart_FuelVSKm } from "../../UI/Highchart/Highchart.FuelVSKm.js";
@@ -105,7 +106,12 @@ export const createKpisGroup = () => {
                             <div class="col-md-6">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <div id="chart-combustible" style="height:100%;"></div>
+                                        <div class="d-flex flex-row gap-1 justify-content-between">
+                                            <div class="" id="root-list-unit-limit-speed"></div>
+
+                                            <div class="" id="root-list-unit-round-fuel"></div>
+                                        </div>
+                                        <!-- <div id="chart-combustible" style="height:100%;"></div> -->
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +165,7 @@ export const createKpisGroup = () => {
     `;
 };
 
-export const updateKpis = (group, data) => {
+export const updateKpis = async (group, data) => {
     document.getElementById("root_group_kpis").textContent = group;
 
     document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
@@ -192,6 +198,12 @@ export const updateKpis = (group, data) => {
     $("#loading_kpis").fadeOut()
     $("#root-reloader_kpis").addClass('visually-hidden')
     $("#root_kpis").removeClass('visually-hidden')
+
+
+    // $( "#root-list-unit-limit-speed" ).html( await getLimitSpeed( '2025-10-01', '2025-11-01', 29566197 ) )
+    // $( "#root-list-unit-round-fuel" ).html( await getRoundFuel() )
+
+    // $( "#root-list-unit-limit-speed" ).html( await getRoundFuel() )
 
     // const meta_rendimiento = 20;
     // const porcentaje_meta = Math.min(
@@ -229,3 +241,86 @@ export const execReport = (days, from, to) => {
         ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days );
     }
 }
+
+// const getLimitSpeed = () => {
+//   return fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
+//     .then(data => {
+//       let html = ``;
+
+//       if (data?.rows) {
+//         data.rows.forEach(element => {
+//           html += `
+//             <li class="list-group-item d-flex justify-content-between align-items-start">
+//               <div class="ms-2 me-auto">
+//                 <div class="fw-bold">${element.unidad}</div>
+//                 Velocidad registrada: ${element.exceso_velocidad.registrado}
+//               </div>
+//               <span class="badge text-bg-primary rounded-pill">${element.exceso_velocidad.veces}</span>
+//             </li>
+//           `
+//         });
+
+//         return `<ol class="list-group list-group-numbered">${html}</ol>`;
+//       }
+
+//       return null;
+//     });
+// }
+
+export const getLimitSpeed = async ( from, to, id_group ) => {
+  const data = await fetchReporte( from, to, id_group, 'speed/getLimitSpeed.php');
+
+  if (!data?.rows) return null;
+
+  console.log(data.rows);
+  
+  const html = data.rows.map(element => `
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-bold">${element.unidad}</div>
+        Velocidad registrada: ${element.exceso_velocidad.registrado}
+      </div>
+      <span class="badge text-bg-primary rounded-pill">${element.exceso_velocidad.veces}</span>
+    </li>
+  `).join('');
+
+  return `<ol class="list-group list-group-numbered">${html}</ol>`;
+};
+
+export const getRoundFuel = async (from, to, id_group) => {
+    const data = await fetchReporte( from, to, id_group, 'fuel/getRoundFuel.php');
+
+    if (!data?.rows) return null;
+
+    console.log( data.rows );
+    
+    const html = data.rows
+    .filter(e => e.rendimiento && e.rendimiento.trim() !== "")
+    .map(element => `
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">${element.unidad}</div>
+            Rendimiento promedio en base aaaaa
+        </div>
+        <span class="badge text-bg-primary rounded-pill">${element.rendimiento}</span>
+        </li>
+    `)
+    .join('');
+
+    return `<ol class="list-group list-group-numbered">${html}</ol>`;
+}
+    // fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
+    // .then(data => {
+    //   if (data){
+    //     console.log('Datos de excesos de velocidad');
+    //     console.log(data);
+    //   } 
+    // });
+
+    // fetchReporte('2025-10-01', '2025-11-01', 29566197, 'fuel/getRoundFuel.php')
+    // .then(data => {
+    //   if (data){
+    //     console.log('Datos de Promedio de combustible');
+    //     console.log(data);
+    //   } 
+    // });

@@ -10,7 +10,10 @@ import { htmlCreateNotification } from "./src/components/main/Notifications.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
 import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
-import { fetchReporte } from "./src/api/reports/getReports.js";
+
+import { getLimitSpeed, getRoundFuel } from "./src/components/main/kpis/Kpis_groups.js";
+import { getRangoFechas } from "./src/utils/timestamp.js";
+// import { fetchReporte } from "./src/api/reports/getReports.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
@@ -24,23 +27,6 @@ export let _group_select = "all_units";
 
 export async function iniciarWialon() {
   try {
-
-    fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
-    .then(data => {
-      if (data){
-        console.log('Datos de excesos de velocidad');
-        console.log(data);
-      } 
-    });
-
-    fetchReporte('2025-10-01', '2025-11-01', 29566197, 'fuel/getRoundFuel.php')
-    .then(data => {
-      if (data){
-        console.log('Datos de Promedio de combustible');
-        console.log(data);
-      } 
-    });
-
     clearHTML(
       "#root-card",
       "#root-card-info",
@@ -57,11 +43,13 @@ export async function iniciarWialon() {
     const groups = session.getItems("avl_unit_group");
     const resources = session.getItems("avl_resource");
     const all_units = session.getItems("avl_unit");
-    
-    if( _group_select != "all_units" ){
-      ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
 
-      // ejecutarReporteGrupal2( "Z COMBUSTIBLE POR GRUPO GAFI", "Llenados de Combustible", _group_select, 7 );
+    if( _group_select != "all_units" ){
+      const { fechaInicio, fechaFin } = getRangoFechas();
+
+      ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
+      await getLimitSpeed(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
+      await getRoundFuel(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
 
       $( "#root-card-kpis" ).removeClass('visually-hidden')
     }else{
@@ -110,8 +98,9 @@ export async function iniciarWialon() {
   }
 }
 
-const getInfocard = (name, owner = "", total = 0, group_select) => {
+const getInfocard = (name, owner = "", total = 0, group_select, id_group) => {
   sessionStorage.setItem("group_select", group_select);
+  sessionStorage.setItem("id_group_select", id_group)
   if (group_select) {
     $("#loading").fadeIn();
     $("#loading_kpis").fadeIn();

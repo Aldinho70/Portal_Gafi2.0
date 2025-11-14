@@ -81,3 +81,17 @@ export const calcularTiempoTotalByArrayTimestamp = (timestamps) => {
 
   return { horas, minutos, segundos: segs, totalSegundos: segundos };
 }
+
+export const getRangoFechas = (dias = 7) => {
+  const hoy = new Date();
+  const inicio = new Date();
+
+  inicio.setDate(hoy.getDate() - dias);
+
+  const toYMD = d => d.toISOString().split('T')[0];
+
+  return {
+    fechaInicio: toYMD(inicio),
+    fechaFin: toYMD(hoy)
+  };
+};
