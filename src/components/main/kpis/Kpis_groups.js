@@ -52,8 +52,16 @@ export const createKpisGroup = () => {
                         <!-- FILA 1: KPIs numéricos -->
                         <div class="row g-3 mb-4 text-center">
                             <div class="col-md-3">
-                                <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
-                                    <div class="card-body">
+                                <div class="card border-0 shadow-sm bg-light rounded-3 h-100 
+                                            cursor-pointer transition" 
+                                    style="transition: .2s ease;">
+
+                                    <div class="card-body" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal-round-fuel"
+                                        onmouseover="this.parentElement.style.transform='scale(1.03)'; this.parentElement.classList.add('shadow');"
+                                        onmouseout="this.parentElement.style.transform='scale(1)'; this.parentElement.classList.remove('shadow');">
+
                                         <h6 class="fw-bold text-muted text-uppercase">Rendimiento promedio</h6>
                                         <h2 class="fw-bold text-success mb-0" id="kpi-rendimiento">0 km/L</h2>
                                         <small class="text-muted">Meta: 4.5 km/L</small>
@@ -62,14 +70,23 @@ export const createKpisGroup = () => {
                             </div>
 
                             <div class="col-md-3">
-                                <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
-                                    <div class="card-body">
+                                <div class="card border-0 shadow-sm bg-light rounded-3 h-100 
+                                            cursor-pointer transition" 
+                                    style="transition: .2s ease;">
+
+                                    <div class="card-body" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal-limit-speed"
+                                        onmouseover="this.parentElement.style.transform='scale(1.03)'; this.parentElement.classList.add('shadow');"
+                                        onmouseout="this.parentElement.style.transform='scale(1)'; this.parentElement.classList.remove('shadow');">
+
                                         <h6 class="fw-bold text-muted text-uppercase">Consumo total</h6>
                                         <h2 class="fw-bold text-primary mb-0" id="kpi-consumo">0 L</h2>
                                         <small class="text-muted">Últimos 7 días</small>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="col-md-3">
                                 <div class="card border-0 shadow-sm bg-light rounded-3 h-100">
@@ -106,12 +123,12 @@ export const createKpisGroup = () => {
                             <div class="col-md-6">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
-                                        <div class="d-flex flex-row gap-1 justify-content-between">
+                                        <!-- <div class="d-flex flex-row gap-1 justify-content-between">
                                             <div class="" id="root-list-unit-limit-speed"></div>
 
                                             <div class="" id="root-list-unit-round-fuel"></div>
-                                        </div>
-                                        <!-- <div id="chart-combustible" style="height:100%;"></div> -->
+                                        </div> -->
+                                        <div id="chart-combustible" style="height:100%;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -190,10 +207,10 @@ export const updateKpis = async (group, data) => {
         Math.round(parseFloat(data?.["Consumido en movimiento"].toString().replace(',', '.')))
     );
     
-    // initChart_FuelVSKm(
-    //     Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
-    //     Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
-    // );
+    initChart_FuelVSKm(
+        Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
+        Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
+    );
 
     $("#loading_kpis").fadeOut()
     $("#root-reloader_kpis").addClass('visually-hidden')
@@ -259,7 +276,7 @@ export const getLimitSpeed = async ( from, to, id_group ) => {
     </li>
   `).join('');
 
-  return `<ol class="list-group list-group-numbered">${html}</ol>`;
+  $("#root-modal-body-limit-speed").html( `<ol class="list-group list-group-numbered">${html}</ol>` );
 };
 
 export const getRoundFuel = async (from, to, id_group) => {
@@ -273,29 +290,13 @@ export const getRoundFuel = async (from, to, id_group) => {
     .filter(e => e.rendimiento && e.rendimiento.trim() !== "")
     .map(element => `
         <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-            <div class="fw-bold">${element.unidad}</div>
-            Rendimiento promedio en base aaaaa
-        </div>
-        <span class="badge text-bg-primary rounded-pill">${element.rendimiento}</span>
+            <div class="ms-2 me-auto">
+                <div class="fw-bold">${element.unidad}</div>
+            </div>
+            <span class="badge text-bg-primary rounded-pill">${element.rendimiento}</span>
         </li>
     `)
     .join('');
 
-    return `<ol class="list-group list-group-numbered">${html}</ol>`;
+    $("#root-modal-body-round-fuel").html(`<ol class="list-group list-group-numbered">${html}</ol>`);
 }
-    // fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
-    // .then(data => {
-    //   if (data){
-    //     console.log('Datos de excesos de velocidad');
-    //     console.log(data);
-    //   } 
-    // });
-
-    // fetchReporte('2025-10-01', '2025-11-01', 29566197, 'fuel/getRoundFuel.php')
-    // .then(data => {
-    //   if (data){
-    //     console.log('Datos de Promedio de combustible');
-    //     console.log(data);
-    //   } 
-    // });
