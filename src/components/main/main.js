@@ -1,6 +1,7 @@
 import { clearHTML } from '../../utils/utils.js';
 import { execReport } from './kpis/Kpis_groups.js';
 import { createLoader } from '../UI/Loader/Loader.js';
+import { CreateNavTabGroups } from './Groups/Groups.js';
 import { createKpisGroup } from './kpis/Kpis_groups.js';
 import { createTimedata } from '../UI/Timedata/Timedata.js';
 import { createModalNotification } from './Notifications.js';
@@ -14,10 +15,10 @@ $(document).ready(function () {
       ${createTimedata()}
 
       <!-- ======= KPIs grupales ======= -->
-      <div class="row" id="root-card-groups"></div>
+      <div class="row" id="root-card-groups"> ${CreateNavTabGroups()} </div>
 
       <!-- ======= Tabs Navigation ======= -->
-      <div class="container my-3">
+      <div class="">
         <div class="row align-items-center gy-3">
 
           <!-- Buscador -->
@@ -38,6 +39,7 @@ $(document).ready(function () {
 
           <!-- Menú -->
           <div class="col-md-4">
+          
             <ul class="nav nav-pills justify-content-center flex-wrap gap-2" id="menuTabs" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active fw-semibold px-4 py-2 shadow-sm"

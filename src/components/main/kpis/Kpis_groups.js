@@ -264,8 +264,6 @@ export const getLimitSpeed = async ( from, to, id_group ) => {
 
   if (!data?.rows) return null;
 
-  console.log(data.rows);
-  
   const html = data.rows.map(element => `
     <li class="list-group-item d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">
@@ -284,8 +282,6 @@ export const getRoundFuel = async (from, to, id_group) => {
 
     if (!data?.rows) return null;
 
-    console.log( data.rows );
-    
     const html = data.rows
     .filter(e => e.rendimiento && e.rendimiento.trim() !== "")
     .map(element => `

@@ -30,7 +30,9 @@ export async function iniciarWialon() {
     clearHTML(
       "#root-card",
       "#root-card-info",
-      "#root-card-groups",
+      "#root-tab-cedis",
+      "#root-tab-grupos",
+      "#root-tab-todas",
       "#root-list-card"
     );
 
