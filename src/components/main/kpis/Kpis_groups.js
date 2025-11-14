@@ -242,31 +242,6 @@ export const execReport = (days, from, to) => {
     }
 }
 
-// const getLimitSpeed = () => {
-//   return fetchReporte('2025-10-01', '2025-11-01', 29566197, 'speed/getLimitSpeed.php')
-//     .then(data => {
-//       let html = ``;
-
-//       if (data?.rows) {
-//         data.rows.forEach(element => {
-//           html += `
-//             <li class="list-group-item d-flex justify-content-between align-items-start">
-//               <div class="ms-2 me-auto">
-//                 <div class="fw-bold">${element.unidad}</div>
-//                 Velocidad registrada: ${element.exceso_velocidad.registrado}
-//               </div>
-//               <span class="badge text-bg-primary rounded-pill">${element.exceso_velocidad.veces}</span>
-//             </li>
-//           `
-//         });
-
-//         return `<ol class="list-group list-group-numbered">${html}</ol>`;
-//       }
-
-//       return null;
-//     });
-// }
-
 export const getLimitSpeed = async ( from, to, id_group ) => {
   const data = await fetchReporte( from, to, id_group, 'speed/getLimitSpeed.php');
 

@@ -4,6 +4,7 @@ import { createLoader } from '../UI/Loader/Loader.js';
 import { createKpisGroup } from './kpis/Kpis_groups.js';
 import { createTimedata } from '../UI/Timedata/Timedata.js';
 import { createModalNotification } from './Notifications.js';
+import { getLimitSpeed, getRoundFuel } from './kpis/Kpis_groups.js';
 
 $(document).ready(function () {
   $('#mainContent').html(`
@@ -100,10 +101,13 @@ $(document).ready(function () {
         const fin = selectedDates[1];
         const diffDias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
 
-        console.log(`Rango: ${inicio.toISOString().split('T')[0]} → ${fin.toISOString().split('T')[0]}`);
-        console.log(`Total de días: ${diffDias}`);
-        
-        execReport( 0, inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0] );
+        console.log(inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0], sessionStorage.getItem('id_group_select'));
+
+        if( sessionStorage.getItem('id_group_select') ){
+          getLimitSpeed( inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0], sessionStorage.getItem('id_group_select') )
+          getRoundFuel( inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0], sessionStorage.getItem('id_group_select') )
+          execReport( 0, inicio.toISOString().split('T')[0], fin.toISOString().split('T')[0] );
+        }
       }
     }
   });
