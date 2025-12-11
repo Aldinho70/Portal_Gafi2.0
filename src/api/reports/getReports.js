@@ -7,6 +7,7 @@
  * @returns {Promise<object>} - Promesa con la respuesta JSON
  */
 export const fetchReporte = async (from, to, idUnit, endpoint) => {
+  
   const url = `http://ws4cjdg.com/wialonRemoteApi.com/Reports/${endpoint}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&idUnit=${encodeURIComponent(idUnit)}`;
 //   const url = `http://localhost:8080/repos/Jornada%20Digital/Peticiones.wialon.com/Reports/${endpoint}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&idUnit=${encodeURIComponent(idUnit)}`;
 
