@@ -11,7 +11,7 @@ import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMap
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
 import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
 
-import { getLimitSpeed, getRoundFuel } from "./src/components/main/kpis/Kpis_groups.js";
+import { getLimitSpeed, getRoundFuel, getDataResource, getDataReport } from "./src/components/main/kpis/Kpis_groups.js";
 import { getRangoFechas } from "./src/utils/timestamp.js";
 // import { fetchReporte } from "./src/api/reports/getReports.js";
 
@@ -52,6 +52,8 @@ export async function iniciarWialon() {
       ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
       await getLimitSpeed(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
       await getRoundFuel(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
+      await getDataResource();
+      await getDataReport();
 
       $( "#root-card-kpis" ).removeClass('visually-hidden')
     }else{

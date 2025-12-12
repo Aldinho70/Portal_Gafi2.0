@@ -206,7 +206,7 @@ export const updateKpis = async (group, data) => {
         Math.round(parseFloat(data?.["Consumido por FLS en ralentí"].toString().replace(',', '.'))),
         Math.round(parseFloat(data?.["Consumido en movimiento"].toString().replace(',', '.')))
     );
-    
+
     initChart_FuelVSKm(
         Math.round(parseFloat(data?.["Kilometraje"].toString().replace(',', '.'))),
         Math.round(parseFloat(data?.["Combustible consumido"].toString().replace(',', '.')))
@@ -252,19 +252,19 @@ export const execReport = (days, from, to) => {
     $("#loading_kpis").fadeIn();
     $("#root_kpis").addClass('visually-hidden');
     $("#root-reloader-kpis").addClass('visually-hidden');
-    if( days == 0 ){
-        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), 0, from, to );
-    }else{
-        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days );
+    if (days == 0) {
+        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), 0, from, to);
+    } else {
+        ejecutarReporteGrupal("Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", sessionStorage.getItem("group_select"), days);
     }
 }
 
-export const getLimitSpeed = async ( from, to, id_group ) => {
-  const data = await fetchReporte( from, to, id_group, 'speed/getLimitSpeed.php');
+export const getLimitSpeed = async (from, to, id_group) => {
+    const data = await fetchReporte(from, to, id_group, 'speed/getLimitSpeed.php');
 
-  if (!data?.rows) return null;
+    if (!data?.rows) return null;
 
-  const html = data.rows.map(element => `
+    const html = data.rows.map(element => `
     <li class="list-group-item d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">
         <div class="fw-bold">${element.unidad}</div>
@@ -274,17 +274,17 @@ export const getLimitSpeed = async ( from, to, id_group ) => {
     </li>
   `).join('');
 
-  $("#root-modal-body-limit-speed").html( `<ol class="list-group list-group-numbered">${html}</ol>` );
+    $("#root-modal-body-limit-speed").html(`<ol class="list-group list-group-numbered">${html}</ol>`);
 };
 
 export const getRoundFuel = async (from, to, id_group) => {
-    const data = await fetchReporte( from, to, id_group, 'fuel/getRoundFuel.php');
+    const data = await fetchReporte(from, to, id_group, 'fuel/getRoundFuel.php');
 
     if (!data?.rows) return null;
 
     const html = data.rows
-    .filter(e => e.rendimiento && e.rendimiento.trim() !== "")
-    .map(element => `
+        .filter(e => e.rendimiento && e.rendimiento.trim() !== "")
+        .map(element => `
         <li class="list-group-item d-flex justify-content-between align-items-start">
             <div class="ms-2 me-auto">
                 <div class="fw-bold">${element.unidad}</div>
@@ -292,7 +292,61 @@ export const getRoundFuel = async (from, to, id_group) => {
             <span class="badge text-bg-primary rounded-pill">${element.rendimiento}</span>
         </li>
     `)
-    .join('');
+        .join('');
 
     $("#root-modal-body-round-fuel").html(`<ol class="list-group list-group-numbered">${html}</ol>`);
+}
+
+export const getDataResource = async () => {
+    try {
+        const url = "http://ws4cjdg.com/JDigitalReports/src/api/routes/wialon/utils/getIdReportByName.php";
+
+        const body = {
+            "token": "733a7307cd0dd55c139f57fcaa9269d3F2C3174113FA868A9CA730A6B29A073E52098058",
+            "accountName": "CUENTA_DEMO",
+            "reportName": "Z COMBUSTIBLE FLOTA GAFI"
+        };
+
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await resp.json();
+        console.log("Resultado:", data);
+    } catch (err) {
+        console.error("Error en la petición:", err);
+    }
+}
+
+export const getDataReport = async () => {
+    try {
+        const url = "http://ws4cjdg.com/JDigitalReports/src/api/routes/wialon/Reports/getReportsBase.php";
+
+        const body = {
+            "token": "733a7307cd0dd55c139f57fcaa9269d3F2C3174113FA868A9CA730A6B29A073E52098058",
+            "resourceId": 28675002,
+            "templateId": 27,
+            "objectId": 29566197,
+            "from": "2025-12-04 00:00:00",
+            "to": "2025-12-11 00:00:00"
+        }
+
+
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await resp.json();
+        console.log("Resultado :", data);
+    } catch (err) {
+        console.error("Error en la petición:", err);
+    }
 }

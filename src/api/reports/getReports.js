@@ -22,6 +22,7 @@ export const fetchReporte = async (from, to, idUnit, endpoint) => {
     });
 }
 
+
 // --- EJEMPLO DE USO ---
 // fetchReporte('2025-11-01 00:00:00', '2025-11-10 23:59:59', 29566197, 'speed/nombre.php')
 //   .then(data => {
