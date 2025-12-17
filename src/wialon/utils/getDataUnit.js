@@ -26,3 +26,11 @@ export const updateUnitCard = ( id, data ) => {
 
   card.find('.spinner-border').remove();
 }
+
+export const getIdItem = ( session, itemName ) => {
+  const target = 
+    session.getItems("avl_unit_group").find(g => g.getName() === itemName) ||
+    session.getItems("avl_unit").find(u => u.getName() === itemName);
+
+  return target.getId();
+}

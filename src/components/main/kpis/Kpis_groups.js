@@ -1,3 +1,4 @@
+import { TOKEN } from "../../../config/config.js";
 import { fetchReporte } from "../../../api/reports/getReports.js";
 import { initCharFuel } from "../../UI/Highchart/Highchart.Fuel.js";
 import { ejecutarReporteGrupal } from "../../../wialon/utils/getReports.js";
@@ -120,7 +121,7 @@ export const createKpisGroup = () => {
                                 </div>
                             </div>-->
 
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
                                     <div class="card-body">
                                         <!-- <div class="d-flex flex-row gap-1 justify-content-between">
@@ -129,6 +130,36 @@ export const createKpisGroup = () => {
                                             <div class="" id="root-list-unit-round-fuel"></div>
                                         </div> -->
                                         <div id="chart-combustible" style="height:100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="card text-center shadow-sm border-0 rounded-3 bg-light h-100">
+                                    <div class="card-body">
+                                        <h5 class="fw-bold text-secondary text-uppercase mb-3">Carga y descarga</h5>
+
+                                        <div class="row g-3 mb-3">
+                                            <!-- KPI 1 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Litros cargados</h6>
+                                                    <h3 class="fw-bold text-danger mb-0" id="kpi-cargados">0</h3>
+                                                </div>
+                                            </div>
+                                            <!-- KPI 2 -->
+                                            <div class="col-6">
+                                                <div class="p-3 bg-white rounded-3 shadow-sm">
+                                                    <h6 class="fw-semibold text-muted text-uppercase mb-1">Litros descargados</h6>
+                                                    <h3 class="fw-bold text-danger mb-0" id="kpi-descargados">0</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Lista -->
+                                        <div id="" class="mt-3" style="height:220px;">
+                                            <ol class="list-group list-group-numbered" id="list-fuel-units"></ol>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -188,6 +219,8 @@ export const updateKpis = async (group, data) => {
     document.getElementById("kpi-rendimiento").textContent = data?.["Rendimiento"] ?? 'No data 👾';
 
     document.getElementById("kpi-consumo").textContent = data?.["Combustible consumido"] ?? 'No data 👾';
+
+    $("#kpi-descargados").html(data?.["Combustible consumido"] ?? 'No data 👾');
 
     document.getElementById("kpi-velocidad").textContent = data?.["Velocidad Promedio"] ?? 'No data 👾';
 
@@ -297,14 +330,44 @@ export const getRoundFuel = async (from, to, id_group) => {
     $("#root-modal-body-round-fuel").html(`<ol class="list-group list-group-numbered">${html}</ol>`);
 }
 
-export const getDataResource = async () => {
+export const getDataFillingsFuel = ( data ) => {
+    let fuelFill = 0; 
+    let object = []
+    data.forEach(element => {
+        $("#list-fuel-units").append(`
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">${element.c[1]}</div>
+                    Litros cargados: ${parseFloat(element.c[4])}
+                </div>
+            </li>
+        `);
+
+        // object.push({
+        //     unidad: element.c[1],
+        //     fuel_init: parseFloat(element.c[2]),
+        //     fuel_end: parseFloat(element.c[3]),
+        //     fuel_filling: parseFloat(element.c[4]),
+        // })
+        fuelFill += parseFloat(element.c[4])
+    });
+
+    $("#kpi-cargados").html(`${Math.round(fuelFill)} Litros`)
+
+    object.push(fuelFill)
+    console.log(object);
+    
+    return object
+}
+
+export const getDataResource = async ( reportName ) => {
     try {
         const url = "http://ws4cjdg.com/JDigitalReports/src/api/routes/wialon/utils/getIdReportByName.php";
 
         const body = {
-            "token": "733a7307cd0dd55c139f57fcaa9269d3F2C3174113FA868A9CA730A6B29A073E52098058",
+            "token": TOKEN,
             "accountName": "CUENTA_DEMO",
-            "reportName": "Z COMBUSTIBLE FLOTA GAFI"
+            "reportName": reportName
         };
 
         const resp = await fetch(url, {
@@ -316,25 +379,25 @@ export const getDataResource = async () => {
         });
 
         const data = await resp.json();
-        console.log("Resultado:", data);
+        return data
+        
     } catch (err) {
         console.error("Error en la petición:", err);
     }
 }
 
-export const getDataReport = async () => {
+export const getDataReport = async ( resourceId, templateId, objectId, from, to ) => {
     try {
         const url = "http://ws4cjdg.com/JDigitalReports/src/api/routes/wialon/Reports/getReportsBase.php";
 
         const body = {
-            "token": "733a7307cd0dd55c139f57fcaa9269d3F2C3174113FA868A9CA730A6B29A073E52098058",
-            "resourceId": 28675002,
-            "templateId": 27,
-            "objectId": 29566197,
-            "from": "2025-12-04 00:00:00",
-            "to": "2025-12-11 00:00:00"
+            "token": TOKEN,
+            "resourceId": resourceId,
+            "templateId": templateId,
+            "objectId": objectId,
+            "from": from,
+            "to": to
         }
-
 
         const resp = await fetch(url, {
             method: "POST",
@@ -345,7 +408,7 @@ export const getDataReport = async () => {
         });
 
         const data = await resp.json();
-        console.log("Resultado :", data);
+        return data;
     } catch (err) {
         console.error("Error en la petición:", err);
     }

@@ -1,19 +1,16 @@
 import { TOKEN } from "./src/config/config.js";
 import { clearHTML } from "./src/utils/utils.js";
 import wialonSDK from "./src/wialon/sdk/wialonSDK.js";
-import { getFechaActual } from "./src/utils/timestamp.js";
 import { getGroups } from "./src/components/main/Groups/Groups.js";
-import { createObjetUnit } from "./src/wialon/utils/getDataUnit.js";
 import { execReport } from "./src/components/main/kpis/Kpis_groups.js";
+import { getFechaActual, getRangoFechas } from "./src/utils/timestamp.js";
 import { htmlCreateCard /*htmListCard*/ } from "./src/components/main/main.js";
 import { htmlCreateNotification } from "./src/components/main/Notifications.js";
+import { createObjetUnit, getIdItem } from "./src/wialon/utils/getDataUnit.js";
 import { viewMap3D, quitMap3D } from "./src/components/main/GoogleMaps/GoogleMaps.js";
+import { ejecutarReporte, ejecutarReporteGrupal } from "./src/wialon/utils/getReports.js";
 import { createSidebarDetailBody } from "./src/components/main/SidebarDetailUnit/SidebarDetailUnit.js";
-import { ejecutarReporte, ejecutarReporteGrupal, ejecutarReporteGrupal2 } from "./src/wialon/utils/getReports.js";
-
-import { getLimitSpeed, getRoundFuel, getDataResource, getDataReport } from "./src/components/main/kpis/Kpis_groups.js";
-import { getRangoFechas } from "./src/utils/timestamp.js";
-// import { fetchReporte } from "./src/api/reports/getReports.js";
+import { getLimitSpeed, getRoundFuel, getDataResource, getDataReport, getDataFillingsFuel } from "./src/components/main/kpis/Kpis_groups.js";
 
 window.createSidebarDetailBody = createSidebarDetailBody;
 window.viewMap3D = viewMap3D;
@@ -33,6 +30,7 @@ export async function iniciarWialon() {
       "#root-tab-cedis",
       "#root-tab-grupos",
       "#root-tab-todas",
+      "#list-fuel-units",
       "#root-list-card"
     );
 
@@ -48,14 +46,17 @@ export async function iniciarWialon() {
 
     if( _group_select != "all_units" ){
       const { fechaInicio, fechaFin } = getRangoFechas();
-
+      
       ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
       await getLimitSpeed(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
       await getRoundFuel(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
-      await getDataResource();
-      await getDataReport();
 
-      $( "#root-card-kpis" ).removeClass('visually-hidden')
+      const dataResource = await getDataResource( "Z COMBUSTIBLE FLOTA GAFI" );
+        if( !dataResource.error ){
+          const response = await getDataReport( dataResource.resourceId, dataResource.templateId, getIdItem(session, _group_select), fechaInicio, fechaFin);
+          getDataFillingsFuel( response.tables[0].rows )
+        }
+        $( "#root-card-kpis" ).removeClass('visually-hidden')
     }else{
       $( "#root-card-kpis" ).addClass('visually-hidden')
     }
