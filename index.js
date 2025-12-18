@@ -34,31 +34,35 @@ export async function iniciarWialon() {
       "#root-list-card"
     );
 
+    
     //Ponemos la fecha actual
     $("#root-fecha").html(`Ultima actualizacion: ${getFechaActual()}`);
-
+    
     const _units = [];
-
+    
     session = await wialonSDK.init(TOKEN);
     const groups = session.getItems("avl_unit_group");
     const resources = session.getItems("avl_resource");
     const all_units = session.getItems("avl_unit");
-
+    
     if( _group_select != "all_units" ){
       const { fechaInicio, fechaFin } = getRangoFechas();
       
       ejecutarReporteGrupal( "Z COMBUSTIBLE POR GRUPO GAFI", "Horas de Motor", _group_select, 7 );
       await getLimitSpeed(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
       await getRoundFuel(fechaInicio, fechaFin, sessionStorage.getItem('id_group_select'));
-
+      
       const dataResource = await getDataResource( "Z COMBUSTIBLE FLOTA GAFI" );
-        if( !dataResource.error ){
-          const response = await getDataReport( dataResource.resourceId, dataResource.templateId, getIdItem(session, _group_select), fechaInicio, fechaFin);
-          getDataFillingsFuel( response.tables[0].rows )
-        }
-        $( "#root-card-kpis" ).removeClass('visually-hidden')
+      if( !dataResource.error ){
+        const response = await getDataReport( dataResource.resourceId, dataResource.templateId, getIdItem(session, _group_select), fechaInicio, fechaFin);
+        getDataFillingsFuel( response.tables[0].rows )
+      }
+
+      $( "#root-card-kpis" ).removeClass('visually-hidden');
+      $( "#kpis-grupal-tab" ).removeClass('visually-hidden');
     }else{
-      $( "#root-card-kpis" ).addClass('visually-hidden')
+      $( "#kpis-grupal-tab" ).addClass('visually-hidden');
+      $( "#root-card-kpis" ).addClass('visually-hidden');
     }
 
     resources.forEach((resource) => {

@@ -30,25 +30,31 @@ export const createKpisGroup = () => {
 
 
             <div class="col-12" id="root_kpis">
-                <div class="card shadow-sm border-0 rounded-4 bg-white">
-                    <div class="card-body">
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="fw-bold text-dark mb-0">
-                                <i class="bi bi-graph-up-arrow me-2"></i>
-                                Indicadores de desempeño <span id="root_group_kpis"></span>
+                <div class="card-header bg-transparent border-bottom px-4 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                Indicadores de desempeño
+                                <span id="root_group_kpis" class="text-primary"></span>
                             </h4>
+                            <small class="text-muted">Vista ejecutiva consolidada</small>
+                        </div>
 
-                            <div class="btn-group" role="group" aria-label="Rango de fechas">
+                        <div class="d-flex align-items-center gap-3">
+                             <div class="btn-group" role="group" aria-label="Rango de fechas">
                                 <input type="radio" class="btn-check" name="range" id="week" autocomplete="off" checked>
                                 <label class="btn btn-outline-primary" for="week" onclick="execReport(7)">Últimos 7 días</label>
 
                                 <input type="radio" class="btn-check" name="range" id="month" autocomplete="off">
                                 <label class="btn btn-outline-primary" for="month" onclick="execReport(30)">Último mes</label>
                             </div>
-
-                            <small class="text-muted fst-italic">Resumen de los últimos 7 días.</small>
+                            <small class="text-muted fst-italic">Datos agregados</small>
                         </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm border-0 rounded-4 bg-white">
+                    <div class="card-body">
 
                         <!-- FILA 1: KPIs numéricos -->
                         <div class="row g-3 mb-4 text-center">
@@ -294,7 +300,8 @@ export const execReport = (days, from, to) => {
 
 export const getLimitSpeed = async (from, to, id_group) => {
     const data = await fetchReporte(from, to, id_group, 'speed/getLimitSpeed.php');
-
+    console.log(data);
+    
     if (!data?.rows) return null;
 
     const html = data.rows.map(element => `
@@ -305,7 +312,7 @@ export const getLimitSpeed = async (from, to, id_group) => {
       </div>
       <span class="badge text-bg-primary rounded-pill">${element.exceso_velocidad.veces}</span>
     </li>
-  `).join('');
+    `).join('');
 
     $("#root-modal-body-limit-speed").html(`<ol class="list-group list-group-numbered">${html}</ol>`);
 };
